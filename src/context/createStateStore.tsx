@@ -1,3 +1,4 @@
+import { deepEqual } from "../utils/deepEqual";
 import React, {
   createContext,
   useReducer,
@@ -34,8 +35,14 @@ export function createStateStore<Slices extends Record<string, any>>(
     const reducer = (state: any, action: any) => {
       if (action.type === "SET_STATE") {
         const payload = action.payload;
+
         if (typeof payload === "function") {
-          return payload(state); // pass latest state
+          const nextState = payload(state);
+
+          // Skip update if same
+          if (deepEqual(state, nextState)) return state;
+
+          return nextState;
         }
         if (
           typeof state === "object" &&
@@ -43,8 +50,12 @@ export function createStateStore<Slices extends Record<string, any>>(
           typeof payload === "object" &&
           payload !== null
         ) {
+          // If payload is an object / primitive
+          if (deepEqual(state, payload)) return state;
           return { ...state, ...payload }; // merge objects
         }
+        // If payload is an object / primitive
+        if (deepEqual(state, payload)) return state;
         return payload; // primitives
       }
       return state;

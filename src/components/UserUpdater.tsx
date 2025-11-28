@@ -1,8 +1,11 @@
+// Have to solve =>  if the value is the same then why re-render
+
 import React, { useEffect, useState } from "react";
 import { useSRASM } from "../srsm/StateSore";
 import { useMultipleState } from "../hooks/userMultipleState";
 import { initialState, type MyState } from "../srsm/userState";
 import useReadGlobalState from "../hooks/useReadGlobalState";
+import A from "./A";
 
 // Generic Button component for cleaner UI
 const SliceButton: React.FC<{
@@ -64,6 +67,12 @@ const UserUpdater: React.FC = () => {
       "Blog",
     ]);
 
+  const { setState, state } = useSRASM("App");
+
+  useEffect(() => {
+    setState((prev) => ({ ...prev, j: 100, number: 1 }));
+  }, [setState]);
+
   const { state: appState, setState: setApp } = App;
   const { state: countState, setState: setCount } = count;
   const { state: authState, setState: setAuth } = isAuthenticated;
@@ -74,12 +83,9 @@ const UserUpdater: React.FC = () => {
 
   // Example: Initialize App slice on mount
   useEffect(() => {
-    setApp((prev) => ({ ...prev, j: 45, number: 12 }));
-  }, [setApp]);
-
-  useEffect(() => {
-    alert("changs")
-  }, [appState])
+    alert("yes")
+    // setApp((prev) => ({ ...prev, number: 12 }));
+  }, [appState]);
 
   const globalState = useReadGlobalState<MyState>(initialState);
 
@@ -130,10 +136,11 @@ const UserUpdater: React.FC = () => {
           onClick={() =>
             setApp((prev) => ({
               ...prev,
-              number: Number(prev?.number ?? 0) + 10,
+              number: prev?.number,
             }))
           }
         />
+        <A />
         <SliceButton
           label="Reset App"
           color="#3b82f6"
