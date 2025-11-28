@@ -1,54 +1,137 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer, useContext, useMemo } from "react";
 
-// This function creates a state store for any type of state you pass in
-// Returns a context and a provider that we can use in our app
-export function createStateStore<TState>(initialState: TState) {
-  const SET_STATE = "SET_STATE"; // our action type for updating state
+const code = `
+  self.onmessage = (e) => {
+    postMessage(e.data * 3);
+  }
+`;
 
-  // Type for actions sent to the reducer
-  type Action = {
-    type: typeof SET_STATE;
-    payload: Partial<TState>; // we can update only some keys if we want
-  };
+const blob = new Blob([code], { type: "application/javascript" });
+const SRASMWorker = new Worker(URL.createObjectURL(blob));
+// App.tsx
+const aiWorker = new Worker(
+  new URL("../workers/AiWorker.ts", import.meta.url),
+  { type: "module" }
+);
 
-  // Reducer handles the state updates
-  const reducer = (state: TState, action: Action): TState => {
-    switch (action.type) {
-      case SET_STATE:
-        // merge new values with existing state
-        return { ...state, ...action.payload };
-      default:
-        // if action type is unknown, just return current state
-        return state;
-    }
-  };
+/**
+ * Factory function to create a fully-typed state management store.
+ * Supports multiple independent slices of state.
+ *
+ * @template Slices - The shape of your state slices. [Slices === State]
+ * @param initialSlices - Initial state for each slice.
+ * @returns { SRSMProvider, useSlice } - Provider component and hook to consume slices.
+ */
+export function createStateStore<Slices extends Record<string, any>>(
+  initialSlices: Slices
+) {
+  type SliceKey = keyof Slices;
 
-  // Create a context so any component can access state and setStates
-  const StateContext = createContext<{
-    state: TState;
-    setStates: (payload: Partial<TState>) => void;
-  }>({
-    state: initialState, // default initial state
-    setStates: () => {}, // default no-op
-  });
+  const sliceContexts: Record<string, any> = {};
+  const sliceProviders: any[] = [];
+  const slices: Partial<Slices> = {};
 
-  // The provider component to wrap around our app
-  function StateProvider({ children }: { children: React.ReactNode }) {
-    const [state, dispatch] = useReducer(reducer, initialState);
+  // -------------------- Individual Slice Contexts -------------------- //
+  for (const key of Object.keys(initialSlices)) {
+    const SliceContext = createContext<{
+      state: any;
+      setState: (payload: any) => void;
+    } | null>(null);
 
-    // setStates is what components will call to update state
-    const setStates = (payload: Partial<TState>) => {
-      dispatch({ type: SET_STATE, payload });
+    sliceContexts[key] = SliceContext;
+
+    const reducer = (state: any, action: any) => {
+      // alert(action.payload)
+      if (action.type === "SET_STATE") return { ...state, ...action.payload };
+      return state;
     };
 
-    // provide state and updater function to all children
-    return (
-      <StateContext.Provider value={{ state, setStates }}>
-        {children}
-      </StateContext.Provider>
-    );
+    function SliceProvider({
+      children,
+      sliceKey,
+    }: {
+      children: React.ReactNode;
+      sliceKey: SliceKey;
+    }) {
+      const [state, dispatch] = useReducer(reducer, initialSlices[key]);
+
+      const setState = (
+        payload: Partial<any> | ((prev: any) => Partial<any>)
+      ) => {
+        slices[sliceKey] = slices[sliceKey] || initialSlices[sliceKey];
+        const prev = slices[sliceKey];
+
+        const next =
+          typeof payload === "function"
+            ? { ...prev, ...payload(prev) }
+            : { ...prev, ...payload };
+
+        slices[sliceKey] = next; // update global s
+        // console.log(next);
+        
+        // Send to AI worker to predict heavy slice
+        // aiWorker.postMessage({ slice: key, payload });
+        dispatch({ type: "SET_STATE", payload: next });
+
+        // aiWorker.onmessage = (e) => {
+        // const { isHeavy, payload } = e.data;
+
+        // if (isHeavy) {
+        //   // Send to SRASMWorker for heavy computation
+        //   SRASMWorker.postMessage({ slice: key, payload });
+
+        //   // Listen for the result from SRASMWorker
+        //   SRASMWorker.onmessage = (e) => {
+        //     const newState = e.data;
+        //     console.log("haha ");
+        //     console.log(newState);
+
+        //     // Update the slice state
+        //     // alert()
+        //     dispatch({ type: "SET_STATE", payload: newState });
+        //   };
+        // } else {
+        //   // Light slice → normal dispatch
+        //   dispatch({ type: "SET_STATE", payload });
+        // }
+        // };
+      };
+
+      const memoValue = useMemo(() => ({ state, setState }), [state]);
+
+      return (
+        <SliceContext.Provider value={memoValue}>
+          {children}
+        </SliceContext.Provider>
+      );
+    }
+
+    sliceProviders.push(SliceProvider);
   }
 
-  // return context and provider so we can use them in our app
-  return { StateContext, StateProvider };
+  // -------------------- Composed Provider -------------------- //
+  const SRSMProvider = ({ children }: { children: React.ReactNode }) => {
+    const wrappedSlices = sliceProviders.reduceRight(
+      (acc, Provider) => <Provider>{acc}</Provider>,
+      children
+    );
+    return wrappedSlices;
+  };
+
+  // -------------------- useSlice Hook -------------------- //
+  function useSRASM<K extends SliceKey>(slice: K) {
+    const ctx = useContext(sliceContexts[slice as string]);
+    if (!ctx) throw new Error(`Slice '${String(slice)}' not found`);
+
+    type Updater =
+      | Partial<Slices[K]>
+      | ((prev: Slices[K]) => Partial<Slices[K]>);
+
+    return ctx as {
+      state: Slices[K];
+      setState: (payload: Updater) => void;
+    };
+  }
+
+  return { SRSMProvider, useSRASM };
 }

@@ -1,49 +1,18 @@
-// App.tsx (main app component)
-import { useEffect } from "react";
-import useSRSM from "./hooks/userSRSM";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import SRASMTreePage from "./pages/SRASMTreePag";
+import Nav from "./components/Nav";
 
-const App = () => {
-  const { state, setBySrasm } = useSRSM();
-
-  
-
-
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
-
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
-
+const App: React.FC = () => {
   return (
-    <>
-      <button
-        onClick={() =>
-          setBySrasm({
-            App: {
-              number: 10,
-              j: 23,
-            },
-          })
-        }
-      >
-        Click
-      </button>
-
-      <button
-        onClick={() =>
-          setBySrasm({
-            count: 12,
-          })
-        }
-      >
-        Click again
-      </button>
-
-      {/* Optional: Display state */}
-      <p>{JSON.stringify(state.App?.j)}</p>
-    </>
+    <Router>
+      <Nav />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/tree" element={<SRASMTreePage />} />
+      </Routes>
+    </Router>
   );
 };
 

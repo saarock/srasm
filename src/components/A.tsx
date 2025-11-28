@@ -1,20 +1,16 @@
 import React from "react";
-import useSRSM from "../hooks/userSRSM";
+import { useSRASM } from "../srsm/StateSore";
+import SRASMTree from "./SRASMTree";
 
 const A = () => {
-  const { state, setBySrasm } = useSRSM();
-
-  console.log("Component A rendered", state); // ✅ This logs every render
+  console.log("yes");
+  
+  // const { state: globalState, setState } = useSRASM("SRSM_GLOBAL");
 
   return (
     <div>
-      <button
-        onClick={() =>
-          setBySrasm({
-            isAuthenticated: true,
-          })
-        }
-      >Make true</button>
+      {/* Pass the current state to the tree component */}
+      {/* <SRASMTree  /> */}
     </div>
   );
 };
