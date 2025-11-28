@@ -1,19 +1,5 @@
 import React, { createContext, useReducer, useContext, useMemo } from "react";
 
-const code = `
-  self.onmessage = (e) => {
-    postMessage(e.data * 3);
-  }
-`;
-
-const blob = new Blob([code], { type: "application/javascript" });
-const SRASMWorker = new Worker(URL.createObjectURL(blob));
-// App.tsx
-const aiWorker = new Worker(
-  new URL("../workers/AiWorker.ts", import.meta.url),
-  { type: "module" }
-);
-
 /**
  * Factory function to create a fully-typed state management store.
  * Supports multiple independent slices of state.
@@ -29,7 +15,6 @@ export function createStateStore<Slices extends Record<string, any>>(
 
   const sliceContexts: Record<string, any> = {};
   const sliceProviders: any[] = [];
-  const slices: Partial<Slices> = {};
 
   // -------------------- Individual Slice Contexts -------------------- //
   for (const key of Object.keys(initialSlices)) {
@@ -41,14 +26,25 @@ export function createStateStore<Slices extends Record<string, any>>(
     sliceContexts[key] = SliceContext;
 
     const reducer = (state: any, action: any) => {
-      // alert(action.payload)
-      if (action.type === "SET_STATE") return { ...state, ...action.payload };
+      if (action.type === "SET_STATE") {
+        // If both current state and payload are objects, merge
+        if (
+          typeof state === "object" &&
+          state !== null &&
+          typeof action.payload === "object" &&
+          action.payload !== null
+        ) {
+          return { ...state, ...action.payload };
+        } else {
+          // Otherwise, just replace the state (for primitives)
+          return action.payload;
+        }
+      }
       return state;
     };
 
     function SliceProvider({
       children,
-      sliceKey,
     }: {
       children: React.ReactNode;
       sliceKey: SliceKey;
@@ -58,43 +54,17 @@ export function createStateStore<Slices extends Record<string, any>>(
       const setState = (
         payload: Partial<any> | ((prev: any) => Partial<any>)
       ) => {
-        slices[sliceKey] = slices[sliceKey] || initialSlices[sliceKey];
-        const prev = slices[sliceKey];
+        // alert(payload);
+        const prev = state;
 
         const next =
           typeof payload === "function"
-            ? { ...prev, ...payload(prev) }
-            : { ...prev, ...payload };
+            ? payload(prev) // if payload is a function, call it with prev
+            : typeof payload === "object" && payload !== null
+            ? { ...payload } // if payload is an object, shallow copy
+            : payload; // if primitive (string, number, boolean), just use it
 
-        slices[sliceKey] = next; // update global s
-        // console.log(next);
-        
-        // Send to AI worker to predict heavy slice
-        // aiWorker.postMessage({ slice: key, payload });
         dispatch({ type: "SET_STATE", payload: next });
-
-        // aiWorker.onmessage = (e) => {
-        // const { isHeavy, payload } = e.data;
-
-        // if (isHeavy) {
-        //   // Send to SRASMWorker for heavy computation
-        //   SRASMWorker.postMessage({ slice: key, payload });
-
-        //   // Listen for the result from SRASMWorker
-        //   SRASMWorker.onmessage = (e) => {
-        //     const newState = e.data;
-        //     console.log("haha ");
-        //     console.log(newState);
-
-        //     // Update the slice state
-        //     // alert()
-        //     dispatch({ type: "SET_STATE", payload: newState });
-        //   };
-        // } else {
-        //   // Light slice → normal dispatch
-        //   dispatch({ type: "SET_STATE", payload });
-        // }
-        // };
       };
 
       const memoValue = useMemo(() => ({ state, setState }), [state]);
