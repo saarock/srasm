@@ -1,4 +1,10 @@
-import React, { createContext, useReducer, useContext, useMemo } from "react";
+import React, {
+  createContext,
+  useReducer,
+  useContext,
+  useMemo,
+  useCallback,
+} from "react";
 
 /**
  * Factory function to create a fully-typed state management store.
@@ -27,18 +33,19 @@ export function createStateStore<Slices extends Record<string, any>>(
 
     const reducer = (state: any, action: any) => {
       if (action.type === "SET_STATE") {
-        // If both current state and payload are objects, merge
+        const payload = action.payload;
+        if (typeof payload === "function") {
+          return payload(state); // pass latest state
+        }
         if (
           typeof state === "object" &&
           state !== null &&
-          typeof action.payload === "object" &&
-          action.payload !== null
+          typeof payload === "object" &&
+          payload !== null
         ) {
-          return { ...state, ...action.payload };
-        } else {
-          // Otherwise, just replace the state (for primitives)
-          return action.payload;
+          return { ...state, ...payload }; // merge objects
         }
+        return payload; // primitives
       }
       return state;
     };
@@ -51,23 +58,14 @@ export function createStateStore<Slices extends Record<string, any>>(
     }) {
       const [state, dispatch] = useReducer(reducer, initialSlices[key]);
 
-      const setState = (
-        payload: Partial<any> | ((prev: any) => Partial<any>)
-      ) => {
-        // alert(payload);
-        const prev = state;
+      const setState = useCallback(
+        (payload: Partial<any> | ((prev: any) => Partial<any>)) => {
+          dispatch({ type: "SET_STATE", payload });
+        },
+        []
+      );
 
-        const next =
-          typeof payload === "function"
-            ? payload(prev) // if payload is a function, call it with prev
-            : typeof payload === "object" && payload !== null
-            ? { ...payload } // if payload is an object, shallow copy
-            : payload; // if primitive (string, number, boolean), just use it
-
-        dispatch({ type: "SET_STATE", payload: next });
-      };
-
-      const memoValue = useMemo(() => ({ state, setState }), [state]);
+      const memoValue = useMemo(() => ({ state, setState }), [state, setState]);
 
       return (
         <SliceContext.Provider value={memoValue}>
