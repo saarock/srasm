@@ -35,6 +35,19 @@ const errorWorker = new Worker(
 export function createStateStore<Slices extends Record<string, any>>(
   initialSlices: Slices
 ) {
+  /**
+   * Each "slice" corresponds to a piece of state derived from the initialState.
+   * For each slice:
+   *   - A dedicated reducer is created
+   *   - A separate context is provided
+   *
+   * Example:
+   *   If you pass `User` as a slice key, a `User` reducer and context will be generated.
+   *
+   * @note Each slice manages its own state independently, allowing fine-grained updates
+   *       and preventing unnecessary re-renders across unrelated slices.
+   */
+
   type SliceKey = keyof Slices;
 
   const sliceContexts: Record<string, any> = {};
