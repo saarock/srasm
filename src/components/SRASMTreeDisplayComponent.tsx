@@ -1,10 +1,8 @@
 import React from "react";
-import useReadGlobalState from "../hooks/useReadGlobalState";
-import { initialState, type MyState } from "../srsm/userState";
 import EnhancedStateViewer from "./EnhancedStateViewer";
 
-const UserDisplay: React.FC = () => {
-  const state = useReadGlobalState<MyState>(initialState);
+const SRASMTreeDisplayComponent: React.FC<{state: any}> = ({state}) => {
+
   return (
     <main
       className="min-h-screen"
@@ -28,4 +26,4 @@ const UserDisplay: React.FC = () => {
   );
 };
 
-export default UserDisplay;
+export default SRASMTreeDisplayComponent;

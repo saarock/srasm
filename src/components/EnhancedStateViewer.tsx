@@ -245,15 +245,13 @@ export default function EnhancedStateViewer({
 
   return (
     <div
-      className="rounded-2xl shadow-2xl overflow-hidden flex flex-col h-full"
+      className="shadow-2xl overflow-hidden flex flex-col h-screen"
       style={{
         backgroundColor: THEME.bgSecondary,
         color: THEME.textMain,
         border: `1px solid ${THEME.border}`,
       }}
     >
-  
-
       {/* Tabs */}
       <div
         className="flex gap-0 border-b px-4"

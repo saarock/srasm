@@ -331,7 +331,7 @@ const TreeVisualization: React.FC<TreeVisualizationProps> = ({ data, expandAll }
   };
 
   return (
-    <div className="overflow-auto p-6 bg-center" style={{ backgroundColor: THEME.bgPrimary, height: "700px" }}>
+    <div className="overflow-auto p-6 bg-center" style={{ backgroundColor: THEME.bgPrimary, height: "fit-content" }}>
       <svg
         width={svgWidth}
         height={svgHeight}
