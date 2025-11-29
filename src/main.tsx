@@ -7,7 +7,7 @@ import { SRSMProvider } from "./srsm/StateSore.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <SRSMProvider>
+    <SRSMProvider useDeepEqualCheck={true}>
       <App />
       {/* <A /> */}
     </SRSMProvider>

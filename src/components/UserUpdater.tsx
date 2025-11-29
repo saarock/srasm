@@ -70,7 +70,7 @@ const UserUpdater: React.FC = () => {
   const { setState, state } = useSRASM("App");
 
   useEffect(() => {
-    setState((prev) => ({ ...prev, j: 100, number: 1 }));
+    setState((prev) => ({ ...prev, j: 100, number: 0 }));
   }, [setState]);
 
   const { state: appState, setState: setApp } = App;
@@ -81,11 +81,16 @@ const UserUpdater: React.FC = () => {
   const { state: blogState, setState: setBlog } = Blog;
   const { state: userState, setState: setUser } = User;
 
-  // Example: Initialize App slice on mount
+
   useEffect(() => {
-    alert("yes")
-    // setApp((prev) => ({ ...prev, number: 12 }));
-  }, [appState]);
+    // alert("runs")
+  }, [appState])
+
+  const [s, seS] = useState({a: 2});
+
+  // useEffect(() => {
+  //   alert("Ok func")
+  // }, [s])
 
   const globalState = useReadGlobalState<MyState>(initialState);
 
@@ -99,10 +104,14 @@ const UserUpdater: React.FC = () => {
     });
   };
 
+
+
+
   return (
     <div style={{ padding: 24 }}>
       <h2 style={{ marginBottom: 20 }}>Advanced Slice State Tester</h2>
 
+<button onClick={() => seS((prev) => ({...prev,a: 2}))}>Clck</button>
       {/* Buttons */}
       <div
         style={{
@@ -136,7 +145,7 @@ const UserUpdater: React.FC = () => {
           onClick={() =>
             setApp((prev) => ({
               ...prev,
-              number: prev?.number,
+              number:Number( prev?.number) + 10,
             }))
           }
         />
