@@ -22,7 +22,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         onClick={expandAll}
         className="flex-1 px-3 py-2 rounded-xl bg-[#00E6E6] text-[#001F1F] font-semibold hover:bg-[#00CCCC] transition-colors shadow-lg shadow-[#00E6E640]"
       >
-        Expand All
+        Expand All              
       </button>
       <button
         onClick={collapseAll}
