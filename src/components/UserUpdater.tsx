@@ -1,7 +1,7 @@
 // Have to solve =>  if the value is the same then why re-render
 
 import React, { useEffect, useState } from "react";
-import { useSRASM } from "../srsm/StateSore";
+
 import { useMultipleState } from "../hooks/userMultipleState";
 import { initialState, type MyState } from "../srsm/userState";
 import useReadGlobalState from "../hooks/useReadGlobalState";
@@ -67,13 +67,11 @@ const UserUpdater: React.FC = () => {
       "Blog",
     ]);
 
-  const { setState, state } = useSRASM("App");
+  const { state: appState, setState: setApp } = App;
 
   useEffect(() => {
-    setState((prev) => ({ ...prev, j: 100, number: 0 }));
-  }, [setState]);
-
-  const { state: appState, setState: setApp } = App;
+    setApp((prev: MyState["App"]) => ({ ...prev, j: 100, number: 0 }));
+  }, [setApp]);
   const { state: countState, setState: setCount } = count;
   const { state: authState, setState: setAuth } = isAuthenticated;
   const { state: keyState, setState: setKey } = key;
@@ -84,9 +82,11 @@ const UserUpdater: React.FC = () => {
 
   useEffect(() => {
     // alert("runs")
+
+    setCount((prev: MyState["count"]) => prev ? prev + 1 : 0)
   }, [appState])
 
-  const [s, seS] = useState({a: 2});
+  const [s, seS] = useState({ a: 2 });
 
   // useEffect(() => {
   //   alert("Ok func")
@@ -111,7 +111,7 @@ const UserUpdater: React.FC = () => {
     <div style={{ padding: 24 }}>
       <h2 style={{ marginBottom: 20 }}>Advanced Slice State Tester</h2>
 
-<button onClick={() => seS((prev) => ({...prev,a: 2}))}>Clck</button>
+      <button onClick={() => seS((prev) => ({ ...prev, a: 2 }))}>Clck</button>
       {/* Buttons */}
       <div
         style={{
@@ -145,7 +145,7 @@ const UserUpdater: React.FC = () => {
           onClick={() =>
             setApp((prev) => ({
               ...prev,
-              number:Number( prev?.number) + 10,
+              number: Number(prev?.number) + 10,
             }))
           }
         />

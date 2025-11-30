@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { useSRASM } from "../srsm/StateSore";
-import SRASMTree from "./SRASMTree";
+
 
 const A = () => {
   console.log("yes");
 
-  const { state } = useSRASM("App");
+  const srasm = useSRASM("App");
+  const state = srasm?.state;
 
   // useEffect(() => {
   //   alert("state change");

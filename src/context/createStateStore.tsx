@@ -151,32 +151,24 @@ export function createStateStore<Slices extends Record<string, any>>(
   // -------------------- useSlice Hook -------------------- //
   function useSRASM<K extends SliceKey>(slice: K) {
     // try {
-    // errorWorker.postMessage({
-    //   errorMessage: "error",
-    //   slice: slice,
-    // });
+      const ctx = useContext(sliceContexts[slice as string]);
+      if (!ctx) throw new Error(`Slice '${String(slice)}' not found`);
 
-    // console.log("yes");
-    // slice as string
-    const ctx = useContext(sliceContexts[slice as string]);
-    if (!ctx) throw new Error(`Slice '${String(slice)}' not found`);
+      type Updater =
+        | Partial<Slices[K]>
+        | ((prev: Slices[K]) => Partial<Slices[K]>);
 
-    type Updater =
-      | Partial<Slices[K]>
-      | ((prev: Slices[K]) => Partial<Slices[K]>);
-
-    return ctx as {
-      state: Slices[K];
-      setState: (payload: Updater) => void;
-    };
+      return ctx as {
+        state: Slices[K];
+        setState: (payload: Updater) => void;
+      };
     // } catch (error) {
-    //   // (async () => {
-    //   //   const explanation = await SRASMAi.explainError(
-    //   //     error instanceof Error ? error.message : "Unknown error",
-    //   //     slice
-    //   //   );
-    //   //   console.warn("AI Explanation:", explanation);
-    //   // })();
+    //   (async () => {
+    //     errorWorker.postMessage({
+    //       errorMessage: "error on SRASM SLICE",
+    //       slice: slice,
+    //     });
+    //   })();
     // }
   }
 

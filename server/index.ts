@@ -12,7 +12,7 @@ const client = new OpenAI({
 async function explainError(errorMessage: string, stateSnapshot: any) {
   try {
     const response = await client.responses.create({
-      model: "gpt-5",
+      model: "gpt-5-nano",
       input: `
         You are an expert React developer.
         Explain this error in simple terms and suggest a fix.
