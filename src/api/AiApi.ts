@@ -1,4 +1,5 @@
 import axios from "axios";
+import model from "../config/lanchain";
 
 export class SRASMAi {
   /**
@@ -7,26 +8,30 @@ export class SRASMAi {
   static async explainError(
     errorMessage: string,
     stateSnapshot: any
-  ): Promise<string> {
+  ): Promise<void> {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/explain-error",
-        {
-          errorMessage,
-          stateSnapshot,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      // // alert()
+      // const response: any = await model.invoke("Why do parrots talk?");
+      // console.log(response);
 
-      // The AI explanation from backend
-      return response.data.explanation || "Could not generate explanation.";
+      // console.log(response?.content);
+      // const aiMsg = await model.invoke([
+      //   {
+      //     role: "system",
+      //     content:
+      //       "You are a helpful assistant that translates English to French. Translate the user sentence.",
+      //   },
+      //   {
+      //     role: "user",
+      //     content: "I love programming.",
+      //   },
+      // ]);
+
+      // console.log(aiMsg);
+      
     } catch (err: any) {
       console.error("AI explainError failed:", err);
-      return "Failed to get AI explanation.";
+      // return "Failed to get AI explanation.";
     }
   }
 

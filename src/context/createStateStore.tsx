@@ -1,3 +1,4 @@
+import { SRASMAi } from "../api/AiApi";
 import { deepEqual } from "../utils/deepEqual";
 import React, {
   createContext,
@@ -153,6 +154,12 @@ export function createStateStore<Slices extends Record<string, any>>(
     // try {
       const ctx = useContext(sliceContexts[slice as string]);
       if (!ctx) throw new Error(`Slice '${String(slice)}' not found`);
+      // (async () => {
+      //   errorWorker.postMessage({
+      //     errorMessage: "error on SRASM SLICE",
+      //     slice: slice,
+      //   });
+      // })();
 
       type Updater =
         | Partial<Slices[K]>

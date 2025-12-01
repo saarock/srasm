@@ -118,8 +118,8 @@ const TreeExplorer: React.FC<TreeExplorerProps> = ({ data, height = 700 }) => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white p-6 md:p-10">
-      <h1 className="text-3xl font-extrabold mb-6">
-        🌳 <span className="text-[#00E6E6]">SRASM</span> — Data Structure
+      <h1 className="text-3xl mb-6">
+        🌳 <span className="text-[#00E6E6]">SRASM</span>: Data Structure
         Explorer
       </h1>
 
@@ -159,6 +159,7 @@ const TreeExplorer: React.FC<TreeExplorerProps> = ({ data, height = 700 }) => {
               renderCustomNodeElement={CustomNode}
               nodeSize={{ x: 200, y: 100 }}
               zoomable
+              draggable={true}
               orientation="vertical"
             />
           </div>

@@ -14,5 +14,5 @@ export default function useReadGlobalState<TSlices extends Record<string, any>>(
     result[keys] = { state };
   }
 
-  return {rootState: result as { [K in keyof TSlices]: TSlices[K]}}
+  return {globalState: result as { [K in keyof TSlices]: TSlices[K]}}
 }

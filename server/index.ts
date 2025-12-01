@@ -1,10 +1,10 @@
 import OpenAI from "openai";
 import { serve } from "bun";
-import 'dotenv/config';
-
+import "dotenv/config";
 
 // Initialize OpenAI client with your API key
 const client = new OpenAI({
+  
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -20,9 +20,11 @@ async function explainError(errorMessage: string, stateSnapshot: any) {
         State snapshot: ${JSON.stringify(stateSnapshot)}
       `,
     });
+  console.log("Response start");
+  
+  console.log(response.output_text);
 
-    // Extract text from response
-    console.log(response);
+    return response.output_text;
   } catch (err: any) {
     console.error("OpenAI explainError failed:", err);
     return "Failed to get AI explanation.";
@@ -37,6 +39,8 @@ function withCORS(response: Response) {
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization"
   );
+
+  
   return response;
 }
 
@@ -57,11 +61,10 @@ serve({
         const { errorMessage, stateSnapshot } = body;
 
         const explanation = await explainError(errorMessage, stateSnapshot);
-        console.log(explanation);
-        
+        // console.log(explanation);
 
         return withCORS(
-          new Response(JSON.stringify({ explanation }), {
+          new Response(JSON.stringify({ explanation: explanation }), {
             headers: { "Content-Type": "application/json" },
           })
         );
