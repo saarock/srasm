@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * useChat Custom Hook
  * Manages all chat-related state and logic
@@ -9,9 +7,11 @@
  * across multiple components and easy to test
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { type ChatMessage } from "../types";
 import model from "../config/lanchain";
+import { IndexDB } from "../utils";
+import { useNavigate, useParams } from "react-router-dom";
 
 /**
  * Interface for the use-chat hook return value
@@ -29,6 +29,10 @@ interface UseChartReturn {
   setInput: (input: string) => void;
   /** Send a new message and get AI response */
   sendMessage: () => Promise<void>;
+  updateMessages: (newMessages: ChatMessage[]) => Promise<void>;
+  setChatId: (currentChatId: string) => void;
+  deleteChat: (chatId: string) => Promise<void>;
+  currentChatId: string;
 }
 
 /**
@@ -37,6 +41,9 @@ interface UseChartReturn {
  * @returns {UseChartReturn} Chat state and methods
  */
 export function useChat(): UseChartReturn {
+  // State for current Active ChatID
+  const [currentChatId, setCurrentChatId] = useState("");
+
   // State for all messages in the conversation
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -49,11 +56,86 @@ export function useChat(): UseChartReturn {
   // State for current user input
   const [input, setInput] = useState("");
 
+  // const params = useParams();
+  // const navigate = useNavigate();
+
+
+
   // State for streaming AI response text
   const [currentAiText, setCurrentAiText] = useState("");
 
   // State for loading indicator
   const [loading, setLoading] = useState(false);
+
+  // Change the chat
+  const setChatId = useCallback(
+    (currentId: string) => {
+      if (loading) {
+        return;
+      }
+      setCurrentChatId(currentId);
+
+
+    },
+    [loading]
+  );
+
+  // Load messages when currentChatId changes
+  useEffect(() => {
+    if (!currentChatId) return;
+
+    const loadMessages = async () => {
+      try {
+        const indexDB = IndexDB.getInstance();
+        const chatMessages = await indexDB.getMessages(currentChatId);
+        if (chatMessages && chatMessages.length > 0) {
+          setMessages(chatMessages);
+        } else {
+          // Default start message for new chats
+          setMessages([
+            {
+              role: "system",
+              content:
+                "Actually this tool is for developer guidance. Suggest improvements about the SRASM library and try to solve possible issues.",
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error("Failed to load messages:", error);
+      }
+    };
+
+    // alert("hero")
+    loadMessages();
+  }, [currentChatId]);
+
+  // Save messages to IndexDB whenever they change
+  // useEffect(() => {
+
+  //   if (!currentChatId || messages.length === 0 ) {
+  //     return;
+  //   }
+
+  //   (async () => {
+  //     console.log(messages);
+
+  //     const indexDB = IndexDB.getInstance();
+  //     await indexDB.saveMessage(currentChatId, messages);
+  //   })();
+  // }, [messages, currentChatId]);
+
+  const deleteChat = async (chatId: string) => {
+    try {
+      const indexDB = IndexDB.getInstance();
+      await indexDB.deleteChat(chatId);
+      if (currentChatId === chatId) {
+        setCurrentChatId("");
+        setMessages([]);
+      }
+    } catch (error) {
+      console.error("Failed to delete chat:", error);
+    }
+  };
 
   /**
    * Send a message to the AI and receive a streaming response
@@ -72,10 +154,26 @@ export function useChat(): UseChartReturn {
 
     // Inside sendMessage, replace the API call block with LangChain streaming
     try {
-      const updatedMessages = [
-        ...messages,
-        { role: "user", content: userInput },
-      ];
+      const userMessage: ChatMessage = { role: "user", content: userInput };
+
+      const updatedMessages: ChatMessage[] = [...messages, userMessage];
+
+      // Setting the user message
+      setMessages((prev: any) => {
+        const updated = [...prev, updatedMessages];
+        (async () => {
+          try {
+            await IndexDB.getInstance().saveMessage(
+              currentChatId,
+              updatedMessages
+            );
+          } catch (err) {
+            console.error("Failed to save messages:", err);
+          }
+        })();
+        return updated;
+      });
+
       setMessages(updatedMessages as ChatMessage[]);
 
       // Convert messages to LangChain roles
@@ -96,11 +194,25 @@ export function useChat(): UseChartReturn {
         setCurrentAiText(partial); // Update typing effect
       }
 
-      // Add full AI message to chat history
-      setMessages((prev) => [
-        ...prev,
-        { role: "agent", content: partial, timestamp: new Date() },
-      ]);
+      const aiMessage: ChatMessage = {
+        role: "agent",
+        content: partial,
+        timestamp: new Date(),
+      };
+
+      // Add full AI message to chat history and udpate the Database
+      setMessages((prev) => {
+        const updated = [...prev, aiMessage];
+        (async () => {
+          try {
+            await IndexDB.getInstance().saveMessage(currentChatId, updated);
+          } catch (err) {
+            console.error("Failed to save messages:", err);
+          }
+        })();
+        return updated;
+      });
+
       setCurrentAiText("");
     } catch (err) {
       console.error("[useChat] AI error:", err);
@@ -117,7 +229,18 @@ export function useChat(): UseChartReturn {
     } finally {
       setLoading(false);
     }
-  }, [input, loading, messages]);
+  }, [input, loading, messages, currentChatId]);
+
+  const updateMessages = async (newMessages: ChatMessage[]): Promise<void> => {
+    // You can perform any async operation here if needed
+    // Then set the new messages
+
+    // alert(newMessages)
+    console.log(newMessages);
+    // setMessages({ })
+
+    setMessages(newMessages);
+  };
 
   return {
     messages,
@@ -126,5 +249,9 @@ export function useChat(): UseChartReturn {
     loading,
     setInput,
     sendMessage,
+    updateMessages,
+    setChatId,
+    deleteChat,
+    currentChatId,
   };
 }

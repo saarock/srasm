@@ -1,4 +1,3 @@
-"use client";
 
 /**
  * Main SRASM Chat Component
@@ -16,6 +15,7 @@ import { useChat } from "../hooks/useChat";
 import { ChatHeader } from "./chat/chat-header";
 import { ChatMessagesContainer } from "./chat/chat-messages-container";
 import { ChatInput } from "./chat/chat-input";
+import ChatSidebar from "./ChatSideBar";
 
 export default function SrasmChat() {
   // Manage text size preference
@@ -24,36 +24,52 @@ export default function SrasmChat() {
   );
 
   // Get all chat state and methods from custom hook
-  const { messages, input, setInput, currentAiText, loading, sendMessage } =
-    useChat();
+  const {
+    messages,
+    input,
+    setInput,
+    currentAiText,
+    loading,
+    sendMessage,
+    setChatId,
+    currentChatId,
+  } = useChat();
 
   return (
-    <div className="w-full  h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col bg-[#0A0A0A]">
       {/* Main container with gradient background */}
-      <div className="flex-1 bg-[#0A0A0A]  shadow-[#00E6E6]/10 border border-[#1A1A1A] flex flex-col overflow-hidden">
-        {/* Header with title and controls */}
-        <div className="px-8 pt-6">
-          <ChatHeader textSize={textSize} onTextSizeChange={setTextSize} />
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar */}
+        <div className="w-[300px] h-full">
+          <ChatSidebar handleChatClick={setChatId} currentChatId={currentChatId} />
         </div>
 
-        {/* Messages display area */}
-        <div className="flex-1 px-8 pb-4 overflow-hidden">
-          <ChatMessagesContainer
-            messages={messages}
-            currentAiText={currentAiText}
-            loading={loading}
-            textSize={textSize}
-          />
-        </div>
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0A0A0A] shadow-[#00E6E6]/10 border-l border-[#1A1A1A]">
+          {/* Header with title and controls */}
+          <div className="px-8 pt-6">
+            <ChatHeader textSize={textSize} onTextSizeChange={setTextSize} />
+          </div>
 
-        {/* Input area */}
-        <div className="px-8 pb-6">
-          <ChatInput
-            input={input}
-            setInput={setInput}
-            onSendMessage={sendMessage}
-            loading={loading}
-          />
+          {/* Messages display area */}
+          <div className="flex-1 overflow-y-auto">
+            <ChatMessagesContainer
+              messages={messages}
+              currentAiText={currentAiText}
+              loading={loading}
+              textSize={textSize}
+            />
+          </div>
+
+          {/* Input area */}
+          <div className="px-8 pb-6 pt-4">
+            <ChatInput
+              input={input}
+              setInput={setInput}
+              onSendMessage={sendMessage}
+              loading={loading}
+            />
+          </div>
         </div>
       </div>
     </div>

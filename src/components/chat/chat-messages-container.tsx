@@ -1,5 +1,3 @@
-"use client"
-
 /**
  * Chat Messages Container Component
  * Displays the list of messages and handles auto-scroll
@@ -16,6 +14,7 @@ import { useEffect, useRef } from "react"
 import type { ChatMessage as ChatMessageType } from "../../types/chat"
 import { ChatMessage } from "./chat-message"
 import { ThinkingAnimation } from "./thinking-animation"
+
 
 interface ChatMessagesContainerProps {
   /** Array of all messages in conversation */
@@ -41,7 +40,8 @@ export function ChatMessagesContainer({ messages, currentAiText, loading, textSi
   }, [messages, currentAiText, loading])
 
   return (
-    <div className="flex-1 h-full overflow-y-auto p-4 bg-[#0F0F0F] rounded-2xl flex flex-col gap-4">
+    <div className="flex-1 relative h-full overflow-y-auto p-4 bg-[#0F0F0F] rounded-2xl flex flex-col gap-4">
+
       {/* Render all previous messages */}
       {messages.map((msg, idx) => (
         <ChatMessage key={idx} role={msg.role} content={msg.content} timestamp={msg.timestamp} textSize={textSize} />
