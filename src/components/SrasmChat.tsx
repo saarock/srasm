@@ -10,16 +10,17 @@
  * - Handles text size preferences
  */
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useChat } from "../hooks/useChat";
 import { ChatHeader } from "./chat/chat-header";
 import { ChatMessagesContainer } from "./chat/chat-messages-container";
 import { ChatInput } from "./chat/chat-input";
 import ChatSidebar from "./ChatSideBar";
+import type { TextSize } from "../types/chat";
 
 export default function SrasmChat() {
   // Manage text size preference
-  const [textSize, setTextSize] = useState<"compact" | "normal" | "large">(
+  const [textSize, setTextSize] = useState<TextSize>(
     "normal"
   );
 
@@ -33,7 +34,20 @@ export default function SrasmChat() {
     sendMessage,
     setChatId,
     currentChatId,
+    loadMore
   } = useChat();
+
+
+  const onScrollChats = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log(e.clientY);
+    const scrollTop = e.currentTarget.scrollTop;
+
+    if (scrollTop === 0) {
+      loadMore!();
+
+    }
+
+  }
 
   return (
     <div className="w-full h-screen flex flex-col bg-[#0A0A0A]">
@@ -57,7 +71,9 @@ export default function SrasmChat() {
               messages={messages}
               currentAiText={currentAiText}
               loading={loading}
+              loadMore={loadMore}
               textSize={textSize}
+              onScrollChats={onScrollChats}
             />
           </div>
 

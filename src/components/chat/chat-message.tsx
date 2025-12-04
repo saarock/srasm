@@ -25,6 +25,7 @@ interface ChatMessageProps {
   timestamp?: Date;
   /** Current text size setting */
   textSize: "compact" | "normal" | "large";
+  loadMore?: () => void;
 }
 
 /**
@@ -57,6 +58,8 @@ export function ChatMessage({
     : "bg-[#1A1A1A] text-[#E0E0E0] border border-[#2A2A2A]";
 
   // const parsedContent = parseMessageContent(content)
+  console.log(content);
+  
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>

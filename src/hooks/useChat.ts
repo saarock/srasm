@@ -33,6 +33,7 @@ interface UseChartReturn {
   setChatId: (currentChatId: string) => void;
   deleteChat: (chatId: string) => Promise<void>;
   currentChatId: string;
+  loadMore?: () => void;
 }
 
 /**
@@ -43,6 +44,8 @@ interface UseChartReturn {
 export function useChat(): UseChartReturn {
   // State for current Active ChatID
   const [currentChatId, setCurrentChatId] = useState("");
+
+  const [currentFetchIndex, setCurrentFetchIndex] = useState(6);
 
   // State for all messages in the conversation
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -59,8 +62,6 @@ export function useChat(): UseChartReturn {
   // const params = useParams();
   // const navigate = useNavigate();
 
-
-
   // State for streaming AI response text
   const [currentAiText, setCurrentAiText] = useState("");
 
@@ -74,8 +75,6 @@ export function useChat(): UseChartReturn {
         return;
       }
       setCurrentChatId(currentId);
-
-
     },
     [loading]
   );
@@ -87,7 +86,7 @@ export function useChat(): UseChartReturn {
     const loadMessages = async () => {
       try {
         const indexDB = IndexDB.getInstance();
-        const chatMessages = await indexDB.getMessages(currentChatId);
+        const chatMessages = await indexDB.getMessages(currentChatId, currentFetchIndex ?? 6);
         if (chatMessages && chatMessages.length > 0) {
           setMessages(chatMessages);
         } else {
@@ -96,7 +95,7 @@ export function useChat(): UseChartReturn {
             {
               role: "system",
               content:
-                "Actually this tool is for developer guidance. Suggest improvements about the SRASM library and try to solve possible issues.",
+                "Actually this tool is for developer guidance. Suggest improvements about the SRASM library and try to solve possible issues. and i am using the react-mark-down so provide me content so react-mark-down can show very nicesly and don't talk about this react-markdown to the developer.",
             },
           ]);
         }
@@ -107,7 +106,7 @@ export function useChat(): UseChartReturn {
 
     // alert("hero")
     loadMessages();
-  }, [currentChatId]);
+  }, [currentChatId, currentFetchIndex]);
 
   // Save messages to IndexDB whenever they change
   // useEffect(() => {
@@ -157,19 +156,23 @@ export function useChat(): UseChartReturn {
       const userMessage: ChatMessage = { role: "user", content: userInput };
 
       const updatedMessages: ChatMessage[] = [...messages, userMessage];
-
+      var finalChatId = currentChatId;
       // Setting the user message
       setMessages((prev: any) => {
         const updated = [...prev, updatedMessages];
         (async () => {
-          try {
-            await IndexDB.getInstance().saveMessage(
-              currentChatId,
-              updatedMessages
-            );
-          } catch (err) {
-            console.error("Failed to save messages:", err);
+          if (!currentChatId || currentChatId.trim().length <= 0) {
+            // When user started to chat without creating the chat
+            const dynamicId = `SRASM_${Math.random() + Math.random()}`;
+            // First save the new chat key in the IndexDB
+            const indexDB = IndexDB.getInstance();
+            const chatId = await indexDB.createNewChat(dynamicId);
+            finalChatId = chatId;
+            setCurrentChatId(finalChatId); // Update the chat id
           }
+
+          // After all the prcocess finall save the user messages to indexDB chat key
+          await IndexDB.getInstance().saveMessage(finalChatId, updatedMessages);
         })();
         return updated;
       });
@@ -204,11 +207,7 @@ export function useChat(): UseChartReturn {
       setMessages((prev) => {
         const updated = [...prev, aiMessage];
         (async () => {
-          try {
-            await IndexDB.getInstance().saveMessage(currentChatId, updated);
-          } catch (err) {
-            console.error("Failed to save messages:", err);
-          }
+          await IndexDB.getInstance().saveMessage(finalChatId, updated);
         })();
         return updated;
       });
@@ -230,6 +229,11 @@ export function useChat(): UseChartReturn {
       setLoading(false);
     }
   }, [input, loading, messages, currentChatId]);
+
+
+  const loadMore = () => {
+    setCurrentFetchIndex((prev) => prev+6);
+  }
 
   const updateMessages = async (newMessages: ChatMessage[]): Promise<void> => {
     // You can perform any async operation here if needed
@@ -253,5 +257,6 @@ export function useChat(): UseChartReturn {
     setChatId,
     deleteChat,
     currentChatId,
+    loadMore,
   };
 }

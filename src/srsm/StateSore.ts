@@ -1,5 +1,5 @@
 import { createStateStore } from "../context/createStateStore";
 
-import { initialState, type MyState } from "./userState";
+import { initialState, type BlogState } from "./userState";
 
-export const { SRSMProvider, useSRASM } = createStateStore<MyState>(initialState);
+export const { SRASMProvider, useSRASM } = createStateStore<{ blog: BlogState }>({ blog: initialState });

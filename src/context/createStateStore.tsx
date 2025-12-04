@@ -1,4 +1,5 @@
 import { SRASMAi } from "../api/AiApi";
+import { ErrorBoundary } from "../components/ErrorBoundry";
 import { deepEqual } from "../utils/deepEqual";
 import React, {
   createContext,
@@ -102,15 +103,19 @@ export function createStateStore<Slices extends Record<string, any>>(
     function SliceProvider({
       children,
       useDeepEqualCheck = false, // Default is false
+      initialStateOverride,
     }: {
       children: React.ReactNode;
       sliceKey: SliceKey;
       useDeepEqualCheck?: boolean;
+      initialStateOverride?: any;
     }) {
       // alert(useDeepEqualCheck);
       const [state, dispatch] = useReducer(
         (state, action) => reducer(state, action, useDeepEqualCheck),
-        initialSlices[key]
+        initialStateOverride !== undefined
+          ? initialStateOverride
+          : initialSlices[key]
       );
 
       const setState = useCallback(
@@ -129,29 +134,42 @@ export function createStateStore<Slices extends Record<string, any>>(
       );
     }
 
-    sliceProviders.push(SliceProvider);
+    sliceProviders.push({ Provider: SliceProvider, key });
   }
 
   // -------------------- Composed Provider -------------------- //
-  const SRSMProvider = ({
+  const SRASMProvider = ({
     children,
     useDeepEqualCheck = false /** default is false */,
+    relevantCode,
   }: {
     children: React.ReactNode;
     useDeepEqualCheck?: boolean;
+    relevantCode?: { fileName: string; code: string }[];
   }) => {
     const wrappedSlices = sliceProviders.reduceRight(
-      (acc, Provider) => (
-        <Provider useDeepEqualCheck={useDeepEqualCheck}>{acc}</Provider>
+      (acc, { Provider, key }) => (
+        <Provider useDeepEqualCheck={useDeepEqualCheck} sliceKey={key}>
+          {acc}
+        </Provider>
       ),
       children
     );
-    return wrappedSlices;
+
+    return (
+      <ErrorBoundary
+        relevantCode={relevantCode}
+        // sliceName="userSlice"
+        additionalSlices={[initialSlices]}
+      >
+        {wrappedSlices}
+      </ErrorBoundary>
+    );
   };
 
   // -------------------- useSlice Hook -------------------- //
   function useSRASM<K extends SliceKey>(slice: K) {
-    // try {
+    try {
       const ctx = useContext(sliceContexts[slice as string]);
       if (!ctx) throw new Error(`Slice '${String(slice)}' not found`);
       // (async () => {
@@ -161,6 +179,7 @@ export function createStateStore<Slices extends Record<string, any>>(
       //   });
       // })();
 
+
       type Updater =
         | Partial<Slices[K]>
         | ((prev: Slices[K]) => Partial<Slices[K]>);
@@ -169,15 +188,26 @@ export function createStateStore<Slices extends Record<string, any>>(
         state: Slices[K];
         setState: (payload: Updater) => void;
       };
-    // } catch (error) {
-    //   (async () => {
-    //     errorWorker.postMessage({
-    //       errorMessage: "error on SRASM SLICE",
-    //       slice: slice,
-    //     });
-    //   })();
-    // }
+    } catch (error) {
+      // (async () => {
+      //   errorWorker.postMessage({
+      //     errorMessage: "error on SRASM SLICE",
+      //     slice: slice,
+      //   });
+      // })();
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : JSON.stringify(error)?.trim().length > 0
+            ? JSON.stringify(error)
+            : "useSRASM hook error: please check how you used the library. If you cannot solve, go to the SRASM AI.";
+
+      throw Object.assign(new Error(errorMessage), {
+        slice: slice,
+        slices: initialSlices,
+      });
+    }
   }
 
-  return { SRSMProvider, useSRASM };
+  return { SRASMProvider, useSRASM };
 }

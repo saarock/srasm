@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { IndexDB } from '../utils';
 import { Plus } from 'lucide-react';
-
-interface CreateChatProps {
-  onChatCreated?: () => void;
-}
+import type { CreateChatProps } from '../types/create-chat.types';
 
 const CreateChat: React.FC<CreateChatProps> = ({ onChatCreated }) => {
   const [chatName, setChatName] = useState('');

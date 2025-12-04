@@ -169,7 +169,7 @@ export class IndexDB {
   }
 
   // Retrieve all messages for a specific chat
-  public async getMessages(chatId: string): Promise<ChatMessage[]> {
+  public async getMessages(chatId: string, LIMIT: number): Promise<ChatMessage[]> {
     try {
       const db = await this.ensureDB();
 
@@ -182,7 +182,7 @@ export class IndexDB {
         request.onsuccess = (event) => {
           const chat = (event.target as IDBRequest).result;
           if (chat) {
-            resolve(chat.messages);
+            resolve(chat.messages.slice(-LIMIT));
           } else {
             resolve([]); // Return empty array if chat not found or no messages
           }

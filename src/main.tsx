@@ -3,12 +3,27 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-import { SRSMProvider } from "./srsm/StateSore.ts";
+import { SRASMProvider } from "./srsm/StateSore.ts";
+
+import initialStateCode from "./srsm/userState.ts?raw";
+import UserUpdater from "./components/UserUpdater.tsx?raw";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <SRSMProvider useDeepEqualCheck={true}>
+    <SRASMProvider
+      useDeepEqualCheck={true}
+      relevantCode={[
+        {
+          fileName: "src/srsm/userState.ts",
+          code: initialStateCode,
+        },
+        {
+          fileName: "./components/UserUpdater.tsx",
+          code: UserUpdater,
+        },
+      ]}
+    >
       <App />
-    </SRSMProvider>
+    </SRASMProvider>
   </StrictMode>
 );

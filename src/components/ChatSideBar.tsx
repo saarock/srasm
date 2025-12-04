@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IndexDB } from "../utils";
 import CreateChat from "./CreateChat";
 import { MessageSquare, Trash2 } from "lucide-react";
-
-interface ChatSideBarProps {
-  handleChatClick: (currentChatId: string) => void;
-  currentChatId?: string;
-}
+import type { ChatSideBarProps } from "../types/chat-sidebar.types";
 
 const ChatSidebar: React.FC<ChatSideBarProps> = ({ handleChatClick, currentChatId }) => {
   const [chats, setChats] = useState<{ chatId: string; name: string }[]>([]);
@@ -30,7 +26,7 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({ handleChatClick, currentChatI
 
   useEffect(() => {
     fetchChats();
-  }, []);
+  }, [currentChatId]);
 
   const handleDelete = async (e: React.MouseEvent, chatId: string) => {
     e.stopPropagation();
