@@ -1,6 +1,7 @@
 import React from "react";
 import { useMultipleState } from "../hooks";
 import type { SectionHeaderProps, SliceDisplayProps } from "../types";
+import type { BlogState } from "../srsm";
 
 // --- UI Components ---
 const SectionHeader: React.FC<SectionHeaderProps> = ({ title, icon }) => (
@@ -10,12 +11,22 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title, icon }) => (
   </div>
 );
 
-
-
-const SliceDisplay: React.FC<SliceDisplayProps> = ({ title, data, accentColor }) => (
+const SliceDisplay: React.FC<SliceDisplayProps> = ({
+  title,
+  data,
+  accentColor,
+}) => (
   <div style={{ ...styles.card, borderTop: `4px solid ${accentColor}` }}>
     <div style={styles.cardHeader}>
-      <span style={{ ...styles.badge, background: `${accentColor}20`, color: accentColor }}>{title}</span>
+      <span
+        style={{
+          ...styles.badge,
+          background: `${accentColor}20`,
+          color: accentColor,
+        }}
+      >
+        {title}
+      </span>
       <span style={styles.timestamp}>Live</span>
     </div>
     <div style={styles.codeBlock}>
@@ -26,23 +37,20 @@ const SliceDisplay: React.FC<SliceDisplayProps> = ({ title, data, accentColor })
 
 // --- Main Component ---
 const UserUpdater: React.FC = () => {
-  const { Blog } = useMultipleState(["Blog"]);
+  const { Blog } = useMultipleState<{ Blog: BlogState }>(["Blog"]);
   const { state: blogState } = Blog;
-
-
-
 
   return (
     <div style={styles.container}>
       <div style={styles.innerContainer}>
         <div style={styles.controlPanel}>
           <SectionHeader title="Blog Management" icon="📝" />
-          <div style={styles.buttonGrid}>
-
-          </div>
+          <div style={styles.buttonGrid}></div>
         </div>
 
-        <h3 style={{ ...styles.sectionTitle, marginTop: 40, marginBottom: 20 }}>Live Blog Snapshot</h3>
+        <h3 style={{ ...styles.sectionTitle, marginTop: 40, marginBottom: 20 }}>
+          Live Blog Snapshot
+        </h3>
         <div style={styles.monitorGrid}>
           <SliceDisplay title="Blog" data={blogState} accentColor="#eab308" />
         </div>
@@ -58,7 +66,8 @@ const styles: Record<string, React.CSSProperties> = {
   container: {
     minHeight: "100vh",
     backgroundColor: "#f3f4f6",
-    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    fontFamily:
+      "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     padding: "40px 20px",
   },
   innerContainer: {
