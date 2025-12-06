@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MessageSquare, Heart, Send, User } from 'lucide-react';
-import type { CommentSectionProps } from '../types/blog.types';
+import type { CommentSectionProps } from '../types/blogTypes';
 
 const CommentSection: React.FC<CommentSectionProps> = ({
     comments,

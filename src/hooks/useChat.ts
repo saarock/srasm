@@ -17,6 +17,7 @@ import {
 import { type ChatMessage } from "../types";
 import model from "../config/lanchain";
 import { IndexDB } from "../utils";
+import { NUMBER_OF_CHATS } from "../constants";
 
 /**
  * Interface for the use-chat hook return value
@@ -41,6 +42,8 @@ interface UseChartReturn {
   loadMore?: () => void;
   isAutoScroll?: boolean;
   setIsAutoScroll?: Dispatch<SetStateAction<boolean>>;
+  messageLength: number;
+  setMessages: Dispatch<SetStateAction<ChatMessage[]>>;
 }
 
 /**
@@ -54,7 +57,8 @@ export function useChat(): UseChartReturn {
 
   const [currentFetch, setCurrentFetch] = useState({
     isThereIsMore: true,
-    index: 3,
+    index: NUMBER_OF_CHATS,
+    messageLength: 0,
   });
 
   // State to make the chat container scrollable by making the re-renders
@@ -81,7 +85,6 @@ export function useChat(): UseChartReturn {
   // State for loading indicator
   const [loading, setLoading] = useState(false);
 
-
   // Change the chat
   const setChatId = useCallback(
     (currentId: string) => {
@@ -93,6 +96,7 @@ export function useChat(): UseChartReturn {
       setCurrentFetch({
         index: 6,
         isThereIsMore: true,
+        messageLength: 0,
       });
 
       setCurrentChatId(currentId);
@@ -117,6 +121,11 @@ export function useChat(): UseChartReturn {
           currentChatId,
           currentFetch.index
         );
+
+        setCurrentFetch((prev) => ({
+          ...prev,
+          messageLength: chatMessages.messageLen!,
+        }));
 
         setCurrentFetch((prev) => ({
           ...prev,
@@ -299,5 +308,7 @@ export function useChat(): UseChartReturn {
     loadMore,
     isAutoScroll,
     setIsAutoScroll,
+    setMessages,
+    messageLength: currentFetch.messageLength,
   };
 }

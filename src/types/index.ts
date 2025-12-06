@@ -1,3 +1,3 @@
-export * from "./SRASMDebuggerComponentRelatedTypes";
+export * from "./srasmDebuggerTypes";
 export * from "./chat";
-export * from "./toast-types";
+export * from "./toastTypes";

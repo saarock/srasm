@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Clock, Eye, Heart, Calendar, Tag, User, Twitter, Github, Linkedin } from 'lucide-react';
-import type { BlogPostViewProps } from '../types/blog.types';
+import type { BlogPostViewProps } from '../types/blogTypes';
 import CommentSection from './CommentSection';
 import ReactMarkdown from 'react-markdown';
 

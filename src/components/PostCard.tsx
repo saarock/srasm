@@ -1,6 +1,6 @@
 import React from 'react';
 import { Clock, Eye, Heart, Calendar, Tag } from 'lucide-react';
-import type { PostCardProps } from '../types/blog.types';
+import type { PostCardProps } from '../types/blogTypes';
 
 const PostCard: React.FC<PostCardProps> = ({ post, onClick, viewMode }) => {
     if (viewMode === 'list') {

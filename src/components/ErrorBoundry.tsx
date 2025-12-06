@@ -3,7 +3,7 @@ import { ErrorHandler } from "./ErrorHandler";
 import type {
   ErrorBoundaryProps,
   ErrorBoundaryState,
-} from "../types/error-boundary.types";
+} from "../types/errorBoundaryTypes";
 
 export class ErrorBoundary extends Component<
   ErrorBoundaryProps,

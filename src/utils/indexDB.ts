@@ -188,9 +188,9 @@ export class IndexDB {
             const allMessages = chat.messages;
             const latestMessages = allMessages.slice(-LIMIT);
             const noMoreData = latestMessages.length === allMessages.length; // true if we fetched everything
-            resolve({ messages: latestMessages, noMoreData });
+            resolve({ messages: latestMessages, noMoreData, allMessages, messageLen: latestMessages.length });
           } else {
-            resolve({ messages: [], noMoreData: true });
+            resolve({ messages: [], noMoreData: true, allMessages: [] });
           }
         };
 
@@ -200,7 +200,7 @@ export class IndexDB {
       });
     } catch (error) {
       console.error("Failed to get messages:", error);
-      return {messages: [],noMoreData: true}
+      return {messages: [],noMoreData: true, allMessages: []}
     }
   }
 

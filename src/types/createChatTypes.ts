@@ -7,4 +7,6 @@ export interface CreateChatProps {
    * Optional.
    */
   onChatCreated?: () => void;
+
+  // fetchChats: ()
 }

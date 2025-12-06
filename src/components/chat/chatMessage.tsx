@@ -16,17 +16,7 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 
 
-interface ChatMessageProps {
-  /** Role of message sender */
-  role: "user" | "agent" | "system";
-  /** Message content text */
-  content: string;
-  /** Optional timestamp */
-  timestamp?: Date;
-  /** Current text size setting */
-  textSize: "compact" | "normal" | "large";
-  loadMore?: () => void;
-}
+import type { ChatMessageProps } from "../../types/chatComponentsTypes";
 
 /**
  * Get text size classes based on setting
@@ -59,14 +49,13 @@ export function ChatMessage({
 
   // const parsedContent = parseMessageContent(content)
   // console.log(content);
-  
+
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[85%] ${
-          isUser ? "rounded-3xl rounded-tr-lg" : "rounded-3xl rounded-tl-lg"
-        } px-6 py-4 ${baseClasses} shadow-md`}
+        className={`max-w-[85%] ${isUser ? "rounded-3xl rounded-tr-lg" : "rounded-3xl rounded-tl-lg"
+          } px-6 py-4 ${baseClasses} shadow-md`}
       >
         {/* Message content with mixed text and code blocks */}
         <div className={getTextSizeClass(textSize)}>
@@ -81,9 +70,8 @@ export function ChatMessage({
         {/* Optional timestamp */}
         {timestamp && (
           <div
-            className={`text-xs mt-2 ${
-              isUser ? "text-black/60" : "text-[#888]"
-            }`}
+            className={`text-xs mt-2 ${isUser ? "text-black/60" : "text-[#888]"
+              }`}
           >
             {timestamp.toLocaleTimeString()}
           </div>

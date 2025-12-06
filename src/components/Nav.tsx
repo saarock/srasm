@@ -7,7 +7,7 @@ const Nav: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="w-full px-6 py-4 bg-[#181818] border-b border-[#2A2A2A] flex items-center justify-between">
+    <nav className="w-full px-6 py-4 bg-[#181818] border-b border-[#2A2A2A] flex items-center justify-between sticky top-0 z-50">
       <div className="text-xl font-bold text-[#00E6E6]">SRASM</div>
 
       <div className="flex gap-6">

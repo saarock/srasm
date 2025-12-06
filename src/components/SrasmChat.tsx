@@ -11,16 +11,15 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useChat } from "../hooks/useChat";
-import { ChatHeader } from "./chat/chat-header";
-import { ChatMessagesContainer } from "./chat/chat-messages-container";
-import { ChatInput } from "./chat/chat-input";
+import { ChatHeader } from "./chat/chatHeader";
+import { ChatMessagesContainer } from "./chat/chatMessagesContainer";
+import { ChatInput } from "./chat/chatInput";
 import ChatSidebar from "./ChatSideBar";
 import type { TextSize } from "../types/chat";
 import { useLocation } from "react-router-dom";
+import { messageToOpenAIRole } from "@langchain/openai";
 
-export interface SrasmChatProps {
-  chatPath: string;
-}
+import type { SrasmChatProps } from "../types/srasmChatTypes";
 
 export default function SrasmChat(props: SrasmChatProps) {
   // Manage text size preference
@@ -33,18 +32,19 @@ export default function SrasmChat(props: SrasmChatProps) {
     setInput,
     currentAiText,
     loading,
+
     sendMessage,
     setChatId,
     currentChatId,
     loadMore,
     isAutoScroll,
     setIsAutoScroll,
+    messageLength,
+    setMessages
   } = useChat();
 
   const [wasAtBottom, setWasAtBottom] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
-  const prevPath = useRef(location.pathname);
-
 
   // Have to work on the scroll again;
   const onScrollChats = useCallback(
@@ -56,10 +56,6 @@ export default function SrasmChat(props: SrasmChatProps) {
 
       const reachedBottom = scrollHeight - (scrollTop + clientHeight) < 20;
 
-      console.log(wasAtBottom);
-      console.log(isAtBottom);
-      console.log(reachedBottom);
-
       // Step 1: Detect bottom ONCE
       if (!wasAtBottom && !isAtBottom && reachedBottom) {
         setIsAtBottom(true);
@@ -67,8 +63,8 @@ export default function SrasmChat(props: SrasmChatProps) {
         return;
       }
 
-      console.log("wasAtBottom:", wasAtBottom);
-
+      // alert(wasAtBottom)
+      // alert(wasAtBottom)
       // Step 2: Allow loading only if user once reached bottom
       if (wasAtBottom && scrollTop < 6000) {
         // alert("yes")
@@ -79,13 +75,20 @@ export default function SrasmChat(props: SrasmChatProps) {
   );
 
   useEffect(() => {
-
     return () => {
-      if (props.chatPath.toString().trim() !== location.pathname.toString().trim()) {
-      sessionStorage.removeItem("chatId");
+      setWasAtBottom(false);
+      setIsAtBottom(false);
+    };
+  }, [currentChatId]);
 
+  useEffect(() => {
+    return () => {
+      if (
+        props.chatPath.toString().trim() !== location.pathname.toString().trim()
+      ) {
+        sessionStorage.removeItem("chatId");
       }
-    }
+    };
   }, [location.pathname, props.chatPath]);
 
   return (
@@ -95,6 +98,7 @@ export default function SrasmChat(props: SrasmChatProps) {
         {/* Sidebar */}
         <div className="w-[300px] h-full">
           <ChatSidebar
+            setChatMessages={setMessages}
             handleChatClick={setChatId}
             currentChatId={currentChatId}
           />
@@ -124,10 +128,12 @@ export default function SrasmChat(props: SrasmChatProps) {
           {/* Input area */}
           <div className="px-8 pb-6 pt-4">
             <ChatInput
+              messageLength={messageLength}
               input={input}
               setInput={setInput}
               onSendMessage={sendMessage}
               loading={loading}
+              currentChatMessageLen={messages.length}
             />
           </div>
         </div>

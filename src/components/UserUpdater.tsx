@@ -1,8 +1,9 @@
 import React from "react";
 import { useMultipleState } from "../hooks/userMultipleState";
+import type { SectionHeaderProps, SliceDisplayProps } from "../types/userUpdaterTypes";
 
 // --- UI Components ---
-const SectionHeader: React.FC<{ title: string; icon?: string }> = ({ title, icon }) => (
+const SectionHeader: React.FC<SectionHeaderProps> = ({ title, icon }) => (
   <div style={styles.sectionHeader}>
     {icon && <span style={{ marginRight: 8 }}>{icon}</span>}
     <h3 style={styles.sectionTitle}>{title}</h3>
@@ -11,7 +12,7 @@ const SectionHeader: React.FC<{ title: string; icon?: string }> = ({ title, icon
 
 
 
-const SliceDisplay: React.FC<{ title: string; data: any; accentColor: string }> = ({ title, data, accentColor }) => (
+const SliceDisplay: React.FC<SliceDisplayProps> = ({ title, data, accentColor }) => (
   <div style={{ ...styles.card, borderTop: `4px solid ${accentColor}` }}>
     <div style={styles.cardHeader}>
       <span style={{ ...styles.badge, background: `${accentColor}20`, color: accentColor }}>{title}</span>
@@ -37,7 +38,7 @@ const UserUpdater: React.FC = () => {
         <div style={styles.controlPanel}>
           <SectionHeader title="Blog Management" icon="📝" />
           <div style={styles.buttonGrid}>
-  
+
           </div>
         </div>
 

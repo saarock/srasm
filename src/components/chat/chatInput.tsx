@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
 /**
  * Chat Input Component
@@ -14,37 +14,36 @@ import type React from "react"
  *   - loading: Loading state indicator
  */
 
-import { Send } from "lucide-react"
+import { Send } from "lucide-react";
+import { NUMBER_OF_CHATS } from "../../constants";
 
-interface ChatInputProps {
-  /** Current input text value */
-  input: string
-  /** Function to update input text */
-  setInput: (input: string) => void
-  /** Callback when message is sent */
-  onSendMessage: () => void
-  /** Loading state - true while waiting for response */
-  loading: boolean
-}
+import type { ChatInputProps } from "../../types/chatComponentsTypes";
 
-export function ChatInput({ input, setInput, onSendMessage, loading }: ChatInputProps) {
+export function ChatInput({
+  input,
+  setInput,
+  onSendMessage,
+  loading,
+  messageLength,
+  currentChatMessageLen,
+}: ChatInputProps) {
   /**
    * Handle Enter key press to send message
    * Prevents default form submission
    */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      onSendMessage()
+      e.preventDefault();
+      onSendMessage();
     }
-  }
+  };
 
   /**
    * Handle input change
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.currentTarget.value)
-  }
+    setInput(e.currentTarget.value);
+  };
 
   return (
     <div className="mt-4 flex gap-3 items-center">
@@ -55,7 +54,11 @@ export function ChatInput({ input, setInput, onSendMessage, loading }: ChatInput
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder="Ask about SRASM library, bugs, improvements..."
-        disabled={loading}
+        disabled={
+          loading ||
+          messageLength > NUMBER_OF_CHATS ||
+          currentChatMessageLen + messageLength > NUMBER_OF_CHATS
+        }
         className="flex-1 px-6 py-4 rounded-full bg-[#111111] border border-[#2A2A2A] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00E6E6] focus:border-transparent transition-all duration-200 disabled:opacity-50"
         aria-label="Chat message input"
       />
@@ -63,7 +66,12 @@ export function ChatInput({ input, setInput, onSendMessage, loading }: ChatInput
       {/* Send button */}
       <button
         onClick={onSendMessage}
-        disabled={loading || !input.trim()}
+        disabled={
+          loading ||
+          !input.trim() ||
+          messageLength > NUMBER_OF_CHATS ||
+          currentChatMessageLen + messageLength > NUMBER_OF_CHATS
+        }
         className="px-6 py-4 rounded-full bg-gradient-to-r from-[#00E6E6] to-[#00CFCF] text-black font-semibold hover:shadow-lg hover:shadow-[#00E6E6]/30 hover:scale-105 disabled:opacity-50 disabled:scale-100 transition-all duration-200 flex items-center gap-2 group"
         aria-label="Send message"
       >
@@ -71,5 +79,5 @@ export function ChatInput({ input, setInput, onSendMessage, loading }: ChatInput
         <span>Send</span>
       </button>
     </div>
-  )
+  );
 }

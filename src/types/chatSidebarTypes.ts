@@ -1,3 +1,6 @@
+import type { Dispatch, SetStateAction } from "react";
+import type { ChatMessage } from "./chat";
+
 /**
  * Props for the ChatSideBar component.
  */
@@ -13,4 +16,6 @@ export interface ChatSideBarProps {
    * Optional.
    */
   currentChatId?: string;
+
+  setChatMessages: Dispatch<SetStateAction<ChatMessage[]>>
 }

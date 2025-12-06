@@ -10,30 +10,14 @@
  *   - textSize: Current text size setting
  */
 
-import React, {
+import {
   useEffect,
   useRef,
-  type Dispatch,
-  type SetStateAction,
 } from "react";
-import type { ChatMessage as ChatMessageType } from "../../types/chat";
-import { ChatMessage } from "./chat-message";
-import { ThinkingAnimation } from "./thinking-animation";
+import { ChatMessage } from "./chatMessage";
+import { ThinkingAnimation } from "./thinkingAnimation";
 
-interface ChatMessagesContainerProps {
-  /** Array of all messages in conversation */
-  messages: ChatMessageType[];
-  /** Partially streamed AI response */
-  currentAiText: string;
-  /** Loading indicator state */
-  loading: boolean;
-  /** Current text size: compact, normal, or large */
-  textSize: "compact" | "normal" | "large";
-  loadMore?: () => void;
-  onScrollChats?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  isAutoScroll?: boolean;
-  setIsAutoScroll?: Dispatch<SetStateAction<boolean>>;
-}
+import type { ChatMessagesContainerProps } from "../../types/chatComponentsTypes";
 
 export function ChatMessagesContainer({
   messages,
@@ -81,8 +65,8 @@ export function ChatMessagesContainer({
                 textSize === "compact"
                   ? "text-sm"
                   : textSize === "large"
-                  ? "text-lg"
-                  : "text-base"
+                    ? "text-lg"
+                    : "text-base"
               }
             >
               <p className="whitespace-pre-wrap break-words">{currentAiText}</p>

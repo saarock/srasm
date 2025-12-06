@@ -10,12 +10,7 @@
 
 import { Type } from "lucide-react"
 
-interface ChatHeaderProps {
-  /** Current text size: compact, normal, or large */
-  textSize: "compact" | "normal" | "large"
-  /** Callback to update text size */
-  onTextSizeChange: (size: "compact" | "normal" | "large") => void
-}
+import type { ChatHeaderProps } from "../../types/chatComponentsTypes"
 
 /**
  * Sizes available for text adjustment
@@ -47,11 +42,10 @@ export function ChatHeader({ textSize, onTextSizeChange }: ChatHeaderProps) {
           <button
             key={value}
             onClick={() => onTextSizeChange(value)}
-            className={`px-3 py-1.5 rounded-full font-semibold text-sm transition-all duration-200 ${
-              textSize === value
+            className={`px-3 py-1.5 rounded-full font-semibold text-sm transition-all duration-200 ${textSize === value
                 ? "bg-gradient-to-r from-[#00E6E6] to-[#00CFCF] text-black shadow-lg shadow-[#00E6E6]/20"
                 : "text-[#888] hover:text-[#00E6E6]"
-            }`}
+              }`}
             aria-label={`Set text size to ${value}`}
             aria-pressed={textSize === value}
           >

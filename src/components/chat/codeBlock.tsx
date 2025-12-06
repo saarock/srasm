@@ -13,12 +13,7 @@
 import { useState } from "react"
 import { Copy, Check } from "lucide-react"
 
-interface CodeBlockProps {
-  /** The code content to display */
-  code: string
-  /** Programming language for syntax highlighting */
-  language?: string
-}
+import type { CodeBlockProps } from "../../types/chatComponentsTypes"
 
 export function CodeBlock({ code, language = "plaintext" }: CodeBlockProps) {
   // Track copy button state for visual feedback

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { IndexDB } from "../utils";
 import CreateChat from "./CreateChat";
 import { MessageSquare, Trash2 } from "lucide-react";
-import type { ChatSideBarProps } from "../types/chat-sidebar.types";
+import type { ChatSideBarProps } from "../types/chatSidebarTypes";
 
 const ChatSidebar: React.FC<ChatSideBarProps> = ({
   handleChatClick,
   currentChatId,
+  setChatMessages,
 }) => {
   const [chats, setChats] = useState<{ chatId: string; name: string }[]>([]);
 
@@ -20,19 +21,14 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({
 
       const chatIdCache = sessionStorage.getItem("chatId");
       if (chatIdCache) {
-        // alert()
-        // alert(chatIdCache)
         handleChatClick(JSON.parse(chatIdCache));
         return;
       }
-
 
       // Default select latest if none selected and chats exist
       if (reversedChats.length > 0 && !currentChatId) {
         handleChatClick(reversedChats[0].chatId);
       }
-
-
     } catch (error) {
       console.error("Failed to fetch chats:", error);
     }
@@ -52,6 +48,7 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({
     // Refresh list
     const db = await indexDB.getChats();
     const reversedChats = db.reverse();
+
     setChats(reversedChats);
 
     // If deleted active chat, select another
@@ -62,6 +59,14 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({
         handleChatClick("");
       }
     }
+
+    // alert(reversedChats.length)
+
+    // if (reversedChats.length <= 0) {
+    setChatMessages([]);
+    sessionStorage.removeItem("chatId");
+    // return;
+    // }
   };
 
   return (

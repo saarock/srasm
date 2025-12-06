@@ -8,7 +8,7 @@ import {
   RefreshCcw,
   Terminal,
 } from "lucide-react";
-import type { ErrorHandlerProps } from "../types/error-handler.types";
+import type { ErrorHandlerProps } from "../types/errorHandlerTypes";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";

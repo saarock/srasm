@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { type ToastItemProps, toastStyles } from "../types/toast-types";
+import { type ToastItemProps, toastStyles } from "../types/toastTypes";
 
 // Single Toast
 export const ToastItem = ({ id, message, type, onRemove }: ToastItemProps) => {

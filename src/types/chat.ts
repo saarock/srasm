@@ -20,6 +20,8 @@ export interface ChatMessage {
 export interface ChatMessages {
   messages: ChatMessage[];
   noMoreData: boolean;
+  allMessages: ChatMessage[];
+   messageLen?: number;
 }
 
 /** Converts chat role to LangChain-compatible format */
