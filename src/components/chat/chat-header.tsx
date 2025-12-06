@@ -1,5 +1,3 @@
-"use client"
-
 /**
  * Chat Header Component
  * Displays the app title, branding, and text size controls

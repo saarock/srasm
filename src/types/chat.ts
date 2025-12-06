@@ -16,6 +16,12 @@ export interface ChatMessage {
   id?: string
 }
 
+// For multiple chat load
+export interface ChatMessages {
+  messages: ChatMessage[];
+  noMoreData: boolean;
+}
+
 /** Converts chat role to LangChain-compatible format */
 export function mapRole(role: ChatMessage["role"]): "human" | "ai" | "system" {
   if (role === "user") return "human"

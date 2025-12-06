@@ -1,4 +1,4 @@
-import type { ChatMessage } from "../types";
+import type { ChatMessage, ChatMessages } from "../types";
 
 export class IndexDB {
   private dataBaseName: string = "SRASM_DATABASE";
@@ -169,7 +169,10 @@ export class IndexDB {
   }
 
   // Retrieve all messages for a specific chat
-  public async getMessages(chatId: string, LIMIT: number): Promise<ChatMessage[]> {
+  public async getMessages(
+    chatId: string,
+    LIMIT: number
+  ): Promise<ChatMessages> {
     try {
       const db = await this.ensureDB();
 
@@ -182,9 +185,12 @@ export class IndexDB {
         request.onsuccess = (event) => {
           const chat = (event.target as IDBRequest).result;
           if (chat) {
-            resolve(chat.messages.slice(-LIMIT));
+            const allMessages = chat.messages;
+            const latestMessages = allMessages.slice(-LIMIT);
+            const noMoreData = latestMessages.length === allMessages.length; // true if we fetched everything
+            resolve({ messages: latestMessages, noMoreData });
           } else {
-            resolve([]); // Return empty array if chat not found or no messages
+            resolve({ messages: [], noMoreData: true });
           }
         };
 
@@ -194,7 +200,7 @@ export class IndexDB {
       });
     } catch (error) {
       console.error("Failed to get messages:", error);
-      return [];
+      return {messages: [],noMoreData: true}
     }
   }
 

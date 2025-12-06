@@ -7,11 +7,16 @@
  * across multiple components and easy to test
  */
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  type SetStateAction,
+  type Dispatch,
+} from "react";
 import { type ChatMessage } from "../types";
 import model from "../config/lanchain";
 import { IndexDB } from "../utils";
-import { useNavigate, useParams } from "react-router-dom";
 
 /**
  * Interface for the use-chat hook return value
@@ -34,6 +39,8 @@ interface UseChartReturn {
   deleteChat: (chatId: string) => Promise<void>;
   currentChatId: string;
   loadMore?: () => void;
+  isAutoScroll?: boolean;
+  setIsAutoScroll?: Dispatch<SetStateAction<boolean>>;
 }
 
 /**
@@ -45,7 +52,13 @@ export function useChat(): UseChartReturn {
   // State for current Active ChatID
   const [currentChatId, setCurrentChatId] = useState("");
 
-  const [currentFetchIndex, setCurrentFetchIndex] = useState(6);
+  const [currentFetch, setCurrentFetch] = useState({
+    isThereIsMore: true,
+    index: 3,
+  });
+
+  // State to make the chat container scrollable by making the re-renders
+  const [isAutoScroll, setIsAutoScroll] = useState<boolean>(false);
 
   // State for all messages in the conversation
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -74,7 +87,15 @@ export function useChat(): UseChartReturn {
       if (loading) {
         return;
       }
+
+      // Reset the pagination before fetch the meassages
+      setCurrentFetch({
+        index: 6,
+        isThereIsMore: true,
+      });
+
       setCurrentChatId(currentId);
+      setIsAutoScroll(false);
     },
     [loading]
   );
@@ -85,10 +106,22 @@ export function useChat(): UseChartReturn {
 
     const loadMessages = async () => {
       try {
+        if (!currentFetch.isThereIsMore) {
+          // If there is no more message at the DB return from here
+          return;
+        }
         const indexDB = IndexDB.getInstance();
-        const chatMessages = await indexDB.getMessages(currentChatId, currentFetchIndex ?? 6);
-        if (chatMessages && chatMessages.length > 0) {
-          setMessages(chatMessages);
+        const chatMessages = await indexDB.getMessages(
+          currentChatId,
+          currentFetch.index
+        );
+
+        setCurrentFetch((prev) => ({
+          ...prev,
+          isThereIsMore: !chatMessages.noMoreData,
+        }));
+        if (chatMessages && chatMessages.messages.length > 0) {
+          setMessages(chatMessages.messages);
         } else {
           // Default start message for new chats
           setMessages([
@@ -106,7 +139,12 @@ export function useChat(): UseChartReturn {
 
     // alert("hero")
     loadMessages();
-  }, [currentChatId, currentFetchIndex]);
+  }, [currentChatId, currentFetch]);
+
+  useEffect(() => {
+    // alert(isAutoScroll)
+    setIsAutoScroll(true);
+  }, [messages]);
 
   // Save messages to IndexDB whenever they change
   // useEffect(() => {
@@ -230,17 +268,16 @@ export function useChat(): UseChartReturn {
     }
   }, [input, loading, messages, currentChatId]);
 
-
-  const loadMore = () => {
-    setCurrentFetchIndex((prev) => prev+6);
-  }
+  const loadMore = useCallback(() => {
+    setCurrentFetch((prev) => ({ ...prev, index: prev.index + 6 }));
+  }, []);
 
   const updateMessages = async (newMessages: ChatMessage[]): Promise<void> => {
     // You can perform any async operation here if needed
     // Then set the new messages
 
     // alert(newMessages)
-    console.log(newMessages);
+    // console.log(newMessages);
     // setMessages({ })
 
     setMessages(newMessages);
@@ -258,5 +295,7 @@ export function useChat(): UseChartReturn {
     deleteChat,
     currentChatId,
     loadMore,
+    isAutoScroll,
+    setIsAutoScroll,
   };
 }

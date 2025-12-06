@@ -1,4 +1,3 @@
-
 /**
  * Main SRASM Chat Component
  * Orchestrates all chat sub-components and manages state
@@ -10,7 +9,7 @@
  * - Handles text size preferences
  */
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useChat } from "../hooks/useChat";
 import { ChatHeader } from "./chat/chat-header";
 import { ChatMessagesContainer } from "./chat/chat-messages-container";
@@ -20,9 +19,7 @@ import type { TextSize } from "../types/chat";
 
 export default function SrasmChat() {
   // Manage text size preference
-  const [textSize, setTextSize] = useState<TextSize>(
-    "normal"
-  );
+  const [textSize, setTextSize] = useState<TextSize>("normal");
 
   // Get all chat state and methods from custom hook
   const {
@@ -34,20 +31,45 @@ export default function SrasmChat() {
     sendMessage,
     setChatId,
     currentChatId,
-    loadMore
+    loadMore,
+    isAutoScroll,
+    setIsAutoScroll,
   } = useChat();
 
+  const [wasAtBottom, setWasAtBottom] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
 
-  const onScrollChats = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log(e.clientY);
-    const scrollTop = e.currentTarget.scrollTop;
+  // Have to work on the scroll again;
+  const onScrollChats = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      const target = e.currentTarget;
+      const scrollTop = target.scrollTop;
+      const scrollHeight = target.scrollHeight;
+      const clientHeight = target.clientHeight;
 
-    if (scrollTop === 0) {
-      loadMore!();
+      const reachedBottom = scrollHeight - (scrollTop + clientHeight) < 20;
 
-    }
+      console.log(wasAtBottom);
+      console.log(isAtBottom);
+      console.log(reachedBottom);
 
-  }
+      // Step 1: Detect bottom ONCE
+      if (!wasAtBottom && !isAtBottom && reachedBottom) {
+        setIsAtBottom(true);
+        setWasAtBottom(true); // updates on next render
+        return;
+      }
+
+      console.log("wasAtBottom:", wasAtBottom);
+
+      // Step 2: Allow loading only if user once reached bottom
+      if (wasAtBottom && scrollTop < 6000) {
+        // alert("yes")
+        loadMore?.();
+      }
+    },
+    [wasAtBottom, isAtBottom, loadMore]
+  );
 
   return (
     <div className="w-full h-screen flex flex-col bg-[#0A0A0A]">
@@ -55,7 +77,10 @@ export default function SrasmChat() {
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
         <div className="w-[300px] h-full">
-          <ChatSidebar handleChatClick={setChatId} currentChatId={currentChatId} />
+          <ChatSidebar
+            handleChatClick={setChatId}
+            currentChatId={currentChatId}
+          />
         </div>
 
         {/* Chat Area */}
@@ -74,6 +99,8 @@ export default function SrasmChat() {
               loadMore={loadMore}
               textSize={textSize}
               onScrollChats={onScrollChats}
+              isAutoScroll={isAutoScroll}
+              setIsAutoScroll={setIsAutoScroll}
             />
           </div>
 

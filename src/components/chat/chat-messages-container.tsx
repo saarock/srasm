@@ -10,7 +10,12 @@
  *   - textSize: Current text size setting
  */
 
-import React, { useEffect, useRef } from "react";
+import React, {
+  useEffect,
+  useRef,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import type { ChatMessage as ChatMessageType } from "../../types/chat";
 import { ChatMessage } from "./chat-message";
 import { ThinkingAnimation } from "./thinking-animation";
@@ -26,6 +31,8 @@ interface ChatMessagesContainerProps {
   textSize: "compact" | "normal" | "large";
   loadMore?: () => void;
   onScrollChats?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  isAutoScroll?: boolean;
+  setIsAutoScroll?: Dispatch<SetStateAction<boolean>>;
 }
 
 export function ChatMessagesContainer({
@@ -34,18 +41,18 @@ export function ChatMessagesContainer({
   loading,
   textSize,
   onScrollChats,
+  isAutoScroll,
 }: ChatMessagesContainerProps) {
   // Reference to scroll to bottom when new messages arrive
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   /**
-   * Auto-scroll to bottom when messages change or text streams in
+   * Auto-scroll to bottom when messages on autLoad not when the user scroll
    * Uses smooth scroll behavior for better UX
    */
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, currentAiText, loading]);
-
+    chatEndRef.current?.scrollIntoView({ behavior: "instant" });
+  }, [isAutoScroll, currentAiText, loading]);
   return (
     <div
       className="flex-1 relative h-full overflow-y-auto p-4 bg-[#0F0F0F] rounded-2xl flex flex-col gap-4"
