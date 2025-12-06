@@ -1,6 +1,6 @@
 import React from "react";
-import { useMultipleState } from "../hooks/userMultipleState";
-import type { SectionHeaderProps, SliceDisplayProps } from "../types/userUpdaterTypes";
+import { useMultipleState } from "../hooks";
+import type { SectionHeaderProps, SliceDisplayProps } from "../types";
 
 // --- UI Components ---
 const SectionHeader: React.FC<SectionHeaderProps> = ({ title, icon }) => (

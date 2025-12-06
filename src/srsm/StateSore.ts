@@ -1,4 +1,4 @@
-import { createStateStore } from "../context/createStateStore";
+import { createStateStore } from "../context";
 
 import { initialState, type BlogState } from "./userState";
 

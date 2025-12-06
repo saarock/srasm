@@ -16,7 +16,7 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 
 
-import type { ChatMessageProps } from "../../types/chatComponentsTypes";
+import type { ChatMessageProps } from "../../types";
 
 /**
  * Get text size classes based on setting

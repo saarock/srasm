@@ -1,4 +1,4 @@
-// import { useSRASM } from "../srsm/StateSore";
+// import { useSRASM } from "../srsm";
 
 
 // export function useAiGeneratedStateByText(messageForAi: string) {

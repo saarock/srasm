@@ -10,16 +10,10 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useChat } from "../hooks/useChat";
-import { ChatHeader } from "./chat/chatHeader";
-import { ChatMessagesContainer } from "./chat/chatMessagesContainer";
-import { ChatInput } from "./chat/chatInput";
+import { useChat } from "../hooks";
+import { ChatHeader, ChatMessagesContainer, ChatInput } from "./chat";
 import ChatSidebar from "./ChatSideBar";
-import type { TextSize } from "../types/chat";
-import { useLocation } from "react-router-dom";
-import { messageToOpenAIRole } from "@langchain/openai";
-
-import type { SrasmChatProps } from "../types/srasmChatTypes";
+import type { TextSize, SrasmChatProps } from "../types";
 
 export default function SrasmChat(props: SrasmChatProps) {
   // Manage text size preference

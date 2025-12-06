@@ -15,7 +15,7 @@ import {
   type Dispatch,
 } from "react";
 import { type ChatMessage } from "../types";
-import model from "../config/lanchain";
+import { model } from "../config";
 import { IndexDB } from "../utils";
 import { NUMBER_OF_CHATS } from "../constants";
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import model from "../config/lanchain";
+import { model } from "../config";
 
 export class SRASMAi {
   /**

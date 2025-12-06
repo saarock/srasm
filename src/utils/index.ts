@@ -1,2 +1,3 @@
-import { IndexDB } from "./indexDB";
-export {IndexDB};
+export * from "./deepEqual";
+export * from "./fileContent";
+export * from "./indexDB";

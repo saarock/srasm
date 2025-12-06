@@ -1,4 +1,4 @@
-import { useSRASM } from "../srsm/StateSore";
+import { useSRASM } from "../srsm";
 
 /**
  * Custom hook to access multiple slices dynamically with proper typing.

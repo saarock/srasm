@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BlogHome from './components/BlogHome';
 import Nav from './components/Nav';
 import TreeExplorer from './components/TreeVisualization';
-import useReadGlobalState from './hooks/useReadGlobalState';
-import { initialState } from './srsm/userState';
+import useReadGlobalState from './hooks';
+import { initialState } from './srsm';
 import SrasmChat from './components/SrasmChat';
 
 const App: React.FC = () => {

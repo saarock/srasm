@@ -1,6 +1,6 @@
-import { SRASMAi } from "../api/AiApi";
+import { SRASMAi } from "../api";
 import { ErrorBoundary } from "../components/ErrorBoundry";
-import { deepEqual } from "../utils/deepEqual";
+import { deepEqual } from "../utils";
 import React, {
   createContext,
   useReducer,

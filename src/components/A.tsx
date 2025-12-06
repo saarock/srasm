@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSRASM } from "../srsm/StateSore";
+import { useSRASM } from "../srsm";
 
 
 const A = () => {

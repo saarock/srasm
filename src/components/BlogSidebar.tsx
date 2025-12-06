@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, Tag, Grid, List, X } from 'lucide-react';
-import type { BlogSidebarProps } from '../types/blogTypes';
+import type { BlogSidebarProps } from '../types';
 
 const BlogSidebar: React.FC<BlogSidebarProps> = ({
     categories,

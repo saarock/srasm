@@ -17,7 +17,7 @@ import {
 import { ChatMessage } from "./chatMessage";
 import { ThinkingAnimation } from "./thinkingAnimation";
 
-import type { ChatMessagesContainerProps } from "../../types/chatComponentsTypes";
+import type { ChatMessagesContainerProps } from "../../types";
 
 export function ChatMessagesContainer({
   messages,

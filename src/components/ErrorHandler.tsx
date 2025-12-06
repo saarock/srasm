@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import model from "../config/lanchain";
+import { model } from "../config";
 import { HumanMessage } from "@langchain/core/messages";
 import {
   AlertTriangle,
@@ -8,7 +8,7 @@ import {
   RefreshCcw,
   Terminal,
 } from "lucide-react";
-import type { ErrorHandlerProps } from "../types/errorHandlerTypes";
+import type { ErrorHandlerProps } from "../types";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";

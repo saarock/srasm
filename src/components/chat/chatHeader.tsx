@@ -10,7 +10,7 @@
 
 import { Type } from "lucide-react"
 
-import type { ChatHeaderProps } from "../../types/chatComponentsTypes"
+import type { ChatHeaderProps } from "../../types"
 
 /**
  * Sizes available for text adjustment

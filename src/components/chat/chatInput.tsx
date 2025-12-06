@@ -17,7 +17,7 @@ import type React from "react";
 import { Send } from "lucide-react";
 import { NUMBER_OF_CHATS } from "../../constants";
 
-import type { ChatInputProps } from "../../types/chatComponentsTypes";
+import type { ChatInputProps } from "../../types";
 
 export function ChatInput({
   input,

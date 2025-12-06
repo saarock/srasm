@@ -1,5 +1,5 @@
 import { HumanMessage } from "@langchain/core/messages";
-import model from "../config/lanchain";
+import { model } from "../config";
 
 self.onmessage = async (event) => {
   const { errorMessage, slice } = event.data;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IndexDB } from "../utils";
 import CreateChat from "./CreateChat";
 import { MessageSquare, Trash2 } from "lucide-react";
-import type { ChatSideBarProps } from "../types/chatSidebarTypes";
+import type { ChatSideBarProps } from "../types";
 
 const ChatSidebar: React.FC<ChatSideBarProps> = ({
   handleChatClick,

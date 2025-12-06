@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useSRASM } from '../srsm/StateSore';
+import { useSRASM } from '../srsm';
 import { Search, Grid, List } from 'lucide-react';
 import BlogSidebar from './BlogSidebar';
 import PostCard from './PostCard';

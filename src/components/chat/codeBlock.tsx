@@ -13,7 +13,7 @@
 import { useState } from "react"
 import { Copy, Check } from "lucide-react"
 
-import type { CodeBlockProps } from "../../types/chatComponentsTypes"
+import type { CodeBlockProps } from "../../types"
 
 export function CodeBlock({ code, language = "plaintext" }: CodeBlockProps) {
   // Track copy button state for visual feedback

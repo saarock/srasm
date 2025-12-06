@@ -1,4 +1,4 @@
-import { useSRASM } from "../srsm/StateSore";
+import { useSRASM } from "../srsm";
 
 export default function useReadGlobalState<TSlices extends Record<string, any>>(
   slices: TSlices
