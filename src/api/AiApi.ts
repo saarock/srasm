@@ -1,13 +1,12 @@
-import axios from "axios";
-import { model } from "../config";
+
 
 export class SRASMAi {
   /**
    * Explain a state-related error using OpenAI backend
    */
   static async explainError(
-    errorMessage: string,
-    stateSnapshot: any
+    _errorMessage: string,
+    _stateSnapshot: any
   ): Promise<void> {
     try {
       // // alert()
@@ -38,7 +37,7 @@ export class SRASMAi {
   /**
    * Predict if the slice update is heavy (needs worker)
    */
-  static async predictHeavySlice(slice: any, payload: any): Promise<boolean> {
+  static async predictHeavySlice(_slice: any, payload: any): Promise<boolean> {
     try {
       const size = JSON.stringify(payload).length;
       return size > 5000;

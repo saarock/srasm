@@ -3,10 +3,11 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-import { SRASMProvider } from "./srsm.ts";
 
-import initialStateCode from "./srsm.ts?raw";
+
+import initialStateCode from "./srsm/index.ts?raw";
 import UserUpdater from "./components/UserUpdater.tsx?raw";
+import { SRASMProvider } from "./srsm/index.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

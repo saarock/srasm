@@ -9,7 +9,7 @@
  * - Handles text size preferences
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useChat } from "../hooks";
 import { ChatHeader, ChatMessagesContainer, ChatInput } from "./chat";
 import ChatSidebar from "./ChatSideBar";

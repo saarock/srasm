@@ -15,7 +15,7 @@ export * from "./PostCard";
 export * from "./SideBar";
 export * from "./SrasmChat";
 export * from "./Toast";
-export * from "./TreeVisualization";
+export { default as TreeExplorer } from "./TreeVisualization";
 export * from "./UserUpdater";
 export * from "./chat";
 // export {SRASMTreeDisplayComponent};

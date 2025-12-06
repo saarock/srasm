@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import "rc-tree/assets/index.css";
 import { Tree as D3Tree, type TreeNodeDatum } from "react-d3-tree";
@@ -38,9 +38,8 @@ const toRcTreeData = (obj: unknown, path: string = ""): RcTreeNode[] => {
   if (isObjectLike(obj)) {
     return Object.entries(obj).map(([k, v]) => ({
       key: path ? `${path}.${k}` : k,
-      title: `${k}: ${
-        isObjectLike(v) || Array.isArray(v) ? typePreview(v) : JSON.stringify(v)
-      }`,
+      title: `${k}: ${isObjectLike(v) || Array.isArray(v) ? typePreview(v) : JSON.stringify(v)
+        }`,
       data: v,
       children:
         isObjectLike(v) || Array.isArray(v)
@@ -80,7 +79,7 @@ const toD3Tree = (obj: unknown, name = "root"): TreeNodeDatum => {
 const TreeExplorer: React.FC<TreeExplorerProps> = ({ data, height = 700 }) => {
   const rcData = useMemo(() => toRcTreeData(data), [data]);
   const d3Data = useMemo(() => [toD3Tree(data)], [data]);
-  const containerRef = useRef<HTMLDivElement>(null);
+
 
   const [selected, setSelected] = useState<RcTreeNode | null>(null);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);

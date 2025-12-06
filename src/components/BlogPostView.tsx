@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Clock, Eye, Heart, Calendar, Tag, User, Twitter, Github, Linkedin } from 'lucide-react';
+import { ArrowLeft, Clock, Eye, Heart, Calendar, Tag, Twitter, Github, Linkedin } from 'lucide-react';
 import type { BlogPostViewProps } from '../types';
 import CommentSection from './CommentSection';
 import ReactMarkdown from 'react-markdown';

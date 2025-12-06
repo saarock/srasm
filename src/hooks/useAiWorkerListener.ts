@@ -8,7 +8,8 @@ export const useAiWorkerListener = (error: unknown, slice: string) => {
   useEffect(() => {
     if (!error) return;
     const worker = new Worker(
-      new URL("../workers/ErrorWorker.ts", import.meta.url)
+      new URL("../workers/ErrorWorker.ts", import.meta.url),
+      { type: "module" }
     );
 
     worker.postMessage({

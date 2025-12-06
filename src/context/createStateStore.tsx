@@ -1,4 +1,4 @@
-import { SRASMAi } from "../api";
+
 import { ErrorBoundary } from "../components/ErrorBoundry";
 import { deepEqual } from "../utils";
 import React, {
@@ -12,12 +12,7 @@ import React, {
 /**
  * Error wroker helps to find the best error from the ai
  */
-const errorWorker = new Worker(
-  new URL("../workers/ErrorWorker.ts", import.meta.url),
-  {
-    type: "module",
-  }
-);
+
 
 // const heavyComputation = new Worker(
 //   new URL("../workers/ErrorWorker.ts", import.meta.url),
