@@ -9,15 +9,20 @@
  * - Handles text size preferences
  */
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useChat } from "../hooks/useChat";
 import { ChatHeader } from "./chat/chat-header";
 import { ChatMessagesContainer } from "./chat/chat-messages-container";
 import { ChatInput } from "./chat/chat-input";
 import ChatSidebar from "./ChatSideBar";
 import type { TextSize } from "../types/chat";
+import { useLocation } from "react-router-dom";
 
-export default function SrasmChat() {
+export interface SrasmChatProps {
+  chatPath: string;
+}
+
+export default function SrasmChat(props: SrasmChatProps) {
   // Manage text size preference
   const [textSize, setTextSize] = useState<TextSize>("normal");
 
@@ -38,6 +43,8 @@ export default function SrasmChat() {
 
   const [wasAtBottom, setWasAtBottom] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
+  const prevPath = useRef(location.pathname);
+
 
   // Have to work on the scroll again;
   const onScrollChats = useCallback(
@@ -70,6 +77,16 @@ export default function SrasmChat() {
     },
     [wasAtBottom, isAtBottom, loadMore]
   );
+
+  useEffect(() => {
+
+    return () => {
+      if (props.chatPath.toString().trim() !== location.pathname.toString().trim()) {
+      sessionStorage.removeItem("chatId");
+
+      }
+    }
+  }, [location.pathname, props.chatPath]);
 
   return (
     <div className="w-full h-screen flex flex-col bg-[#0A0A0A]">

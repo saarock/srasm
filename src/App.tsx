@@ -16,7 +16,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<BlogHome />} />
         <Route path="/tree" element={<TreeExplorer data={globalState} />} />
-        <Route path="/chat" element={<SrasmChat />} />
+        <Route path="/chat" element={<SrasmChat chatPath='/chat'/>} />
         {/* Add more routes here as needed */}
         {/* Example: <Route path="/about" element={<About />} /> */}
       </Routes>

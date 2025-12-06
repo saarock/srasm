@@ -81,6 +81,7 @@ export function useChat(): UseChartReturn {
   // State for loading indicator
   const [loading, setLoading] = useState(false);
 
+
   // Change the chat
   const setChatId = useCallback(
     (currentId: string) => {
@@ -95,6 +96,7 @@ export function useChat(): UseChartReturn {
       });
 
       setCurrentChatId(currentId);
+      sessionStorage.setItem("chatId", JSON.stringify(currentId));
       setIsAutoScroll(false);
     },
     [loading]

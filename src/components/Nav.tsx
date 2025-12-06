@@ -7,16 +7,16 @@ const Nav: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="w-full px-6 py-4 bg-white border-b border-gray-200 flex items-center justify-between">
-      <div className="text-xl font-bold text-blue-600">SRASM</div>
+    <nav className="w-full px-6 py-4 bg-[#181818] border-b border-[#2A2A2A] flex items-center justify-between">
+      <div className="text-xl font-bold text-[#00E6E6]">SRASM</div>
 
       <div className="flex gap-6">
         <Link
           to="/"
-          className={`px-3 py-2 rounded-lg text-sm font-medium transition-all
-            ${isActive("/") 
-              ? "bg-blue-600 text-white shadow-sm" 
-              : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+          className={`px-3 py-2 rounded-lg text-sm font-medium transition-all border
+            ${isActive("/")
+              ? "bg-[#2A2A2A] text-[#00E6E6] border-[#333]"
+              : "text-[#E0E0E0] hover:bg-[#2A2A2A] hover:text-[#00E6E6] border-transparent"
             }`}
         >
           Home
@@ -24,10 +24,10 @@ const Nav: React.FC = () => {
 
         <Link
           to="/tree"
-          className={`px-3 py-2 rounded-lg text-sm font-medium transition-all
-            ${isActive("/tree") 
-              ? "bg-blue-600 text-white shadow-sm" 
-              : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+          className={`px-3 py-2 rounded-lg text-sm font-medium transition-all border
+            ${isActive("/tree")
+              ? "bg-[#2A2A2A] text-[#00E6E6] border-[#333]"
+              : "text-[#E0E0E0] hover:bg-[#2A2A2A] hover:text-[#00E6E6] border-transparent"
             }`}
         >
           SRASM Tree
@@ -35,10 +35,10 @@ const Nav: React.FC = () => {
 
         <Link
           to="/chat"
-          className={`px-3 py-2 rounded-lg text-sm font-medium transition-all
-            ${isActive("/chat") 
-              ? "bg-blue-600 text-white shadow-sm" 
-              : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+          className={`px-3 py-2 rounded-lg text-sm font-medium transition-all border
+            ${isActive("/chat")
+              ? "bg-[#2A2A2A] text-[#00E6E6] border-[#333]"
+              : "text-[#E0E0E0] hover:bg-[#2A2A2A] hover:text-[#00E6E6] border-transparent"
             }`}
         >
           AI Debugger

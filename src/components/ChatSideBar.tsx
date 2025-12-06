@@ -4,7 +4,10 @@ import CreateChat from "./CreateChat";
 import { MessageSquare, Trash2 } from "lucide-react";
 import type { ChatSideBarProps } from "../types/chat-sidebar.types";
 
-const ChatSidebar: React.FC<ChatSideBarProps> = ({ handleChatClick, currentChatId }) => {
+const ChatSidebar: React.FC<ChatSideBarProps> = ({
+  handleChatClick,
+  currentChatId,
+}) => {
   const [chats, setChats] = useState<{ chatId: string; name: string }[]>([]);
 
   const fetchChats = async () => {
@@ -15,10 +18,21 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({ handleChatClick, currentChatI
       const reversedChats = db.reverse();
       setChats(reversedChats);
 
+      const chatIdCache = sessionStorage.getItem("chatId");
+      if (chatIdCache) {
+        // alert()
+        // alert(chatIdCache)
+        handleChatClick(JSON.parse(chatIdCache));
+        return;
+      }
+
+
       // Default select latest if none selected and chats exist
       if (reversedChats.length > 0 && !currentChatId) {
         handleChatClick(reversedChats[0].chatId);
       }
+
+
     } catch (error) {
       console.error("Failed to fetch chats:", error);
     }
@@ -64,17 +78,29 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({ handleChatClick, currentChatI
             <div className="flex flex-col items-center justify-center h-40 text-gray-500 text-center">
               <MessageSquare size={40} className="mb-2 opacity-20" />
               <p className="text-sm italic">No chats yet</p>
-              <p className="text-xs mt-1 opacity-60">Create one to get started!</p>
+              <p className="text-xs mt-1 opacity-60">
+                Create one to get started!
+              </p>
             </div>
           ) : (
             chats.map((chat) => (
               <li
                 key={chat.chatId}
                 onClick={() => handleChatClick(chat.chatId)}
-                className={`cursor-pointer p-3 rounded-xl hover:bg-[#2A2A2A] text-[#E0E0E0] transition-all border border-transparent hover:border-[#333] flex items-center gap-3 group justify-between ${currentChatId === chat.chatId ? 'bg-[#2A2A2A] border-[#333]' : ''}`}
+                className={`cursor-pointer p-3 rounded-xl hover:bg-[#2A2A2A] text-[#E0E0E0] transition-all border border-transparent hover:border-[#333] flex items-center gap-3 group justify-between ${
+                  currentChatId === chat.chatId
+                    ? "bg-[#2A2A2A] border-[#333]"
+                    : ""
+                }`}
               >
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <div className={`w-2 h-2 rounded-full bg-[#00E6E6] transition-opacity ${currentChatId === chat.chatId ? 'opacity-100' : 'opacity-50 group-hover:opacity-100'}`} />
+                  <div
+                    className={`w-2 h-2 rounded-full bg-[#00E6E6] transition-opacity ${
+                      currentChatId === chat.chatId
+                        ? "opacity-100"
+                        : "opacity-50 group-hover:opacity-100"
+                    }`}
+                  />
                   <span className="truncate">{chat.name}</span>
                 </div>
                 <button
