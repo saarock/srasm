@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSRASM } from "../srsm";
 import { Search, Grid, List } from "lucide-react";
 import BlogSidebar from "./BlogSidebar";
@@ -24,6 +24,7 @@ const BlogHome: React.FC = () => {
     searchQuery,
     viewMode,
   } = state;
+
 
   // Filtered posts based on category and search
   const filteredPosts = useMemo(() => {

@@ -1,4 +1,3 @@
-
 import { ErrorBoundary } from "../components/ErrorBoundry";
 import { deepEqual } from "../utils";
 import React, {
@@ -10,41 +9,29 @@ import React, {
 } from "react";
 
 /**
- * Error wroker helps to find the best error from the ai
- */
-
-
-// const heavyComputation = new Worker(
-//   new URL("../workers/ErrorWorker.ts", import.meta.url),
-//   {
-//     type: "module",
-//   }
-// );
-
-/**
- * Factory function to create a fully-typed state management store.
- * Supports multiple independent slices of state.
+ * Creates a state store with individual slice contexts.
+ * @param {Object} initialSlices - Initial state of all slices.
+ * @returns {Object} - An object containing the SRASMProvider and useSRASM hook.
+ * @example
+ * const store = createStateStore({
+ *   userSlice: { user: null },
+ *   productSlice: { products: [] },
+ * });
  *
- * @template Slices - The shape of your state slices. [Slices === State]
- * @param initialSlices - Initial state for each slice.
- * @returns { SRSMProvider, useSlice } - Provider component and hook to consume slices.
+ * const UserUpdater = () => {
+ *   const { state, setState } = useSRASM("userSlice");
+ *   // ...
+ * };
+ *
+ * const ProductUpdater = () => {
+ *   const { state, setState } = useSRASM("productSlice");
+ *   // ...
+ * };
  */
+
 export function createStateStore<Slices extends Record<string, any>>(
   initialSlices: Slices
 ) {
-  /**
-   * Each "slice" corresponds to a piece of state derived from the initialState.
-   * For each slice:
-   *   - A dedicated reducer is created
-   *   - A separate context is provided
-   *
-   * Example:
-   *   If you pass `User` as a slice key, a `User` reducer and context will be generated.
-   *
-   * @note Each slice manages its own state independently, allowing fine-grained updates
-   *       and preventing unnecessary re-renders across unrelated slices.
-   */
-
   type SliceKey = keyof Slices;
 
   const sliceContexts: Record<string, any> = {};
@@ -59,6 +46,13 @@ export function createStateStore<Slices extends Record<string, any>>(
 
     sliceContexts[key] = SliceContext;
 
+    /**
+     * Reducer function for individual slice contexts.
+     * @param {any} state - Current state of the slice.
+     * @param {any} action - Action to update the slice state.
+     * @param {boolean} [useDeepEqualCheck=false] - If true, will check if the next state is deeply equal to the current state and skip the update if they are equal.
+     * @returns {any} - The updated state of the slice.
+     */
     const reducer = (state: any, action: any, useDeepEqualCheck?: boolean) => {
       if (action.type === "SET_STATE") {
         const payload = action.payload;
@@ -95,6 +89,14 @@ export function createStateStore<Slices extends Record<string, any>>(
       return state;
     };
 
+    /**
+     * Provides a context for individual slices.
+     * @param {React.ReactNode} children - React components that should have access to the slice context.
+     * @param {SliceKey} sliceKey - The key of the slice to provide.
+     * @param {boolean} [useDeepEqualCheck=false] - If true, will check if the next state is deeply equal to the current state and skip the update if they are equal.
+     * @param {any} [initialStateOverride=undefined] - An optional override of the initial state of the slice.
+     * @returns {JSX.Element} - A JSX element wrapping the children with the slice context provider.
+     */
     function SliceProvider({
       children,
       useDeepEqualCheck = false, // Default is false
@@ -105,7 +107,6 @@ export function createStateStore<Slices extends Record<string, any>>(
       useDeepEqualCheck?: boolean;
       initialStateOverride?: any;
     }) {
-      // alert(useDeepEqualCheck);
       const [state, dispatch] = useReducer(
         (state, action) => reducer(state, action, useDeepEqualCheck),
         initialStateOverride !== undefined
@@ -132,7 +133,14 @@ export function createStateStore<Slices extends Record<string, any>>(
     sliceProviders.push({ Provider: SliceProvider, key });
   }
 
-  // -------------------- Composed Provider -------------------- //
+  /**
+   * SRASMProvider component that wraps the children with the slice context providers.
+   *
+   * @param children - React.ReactNode - Children to be wrapped with the slice context providers.
+   * @param useDeepEqualCheck - boolean - Default is false. If true, then the state is compared using deep equal.
+   * @param relevantCode - { fileName: string; code: string } - Relevant code block for the error boundary component.
+   * @returns {JSX.Element} - A JSX element wrapping the children with the slice context providers.
+   */
   const SRASMProvider = ({
     children,
     useDeepEqualCheck = false /** default is false */,
@@ -162,7 +170,13 @@ export function createStateStore<Slices extends Record<string, any>>(
     );
   };
 
-  // -------------------- useSlice Hook -------------------- //
+  /**
+   * Hook to access the state and dispatch of a given slice.
+   * Will throw an error if the slice is not found.
+   * @param slice - The key of the slice to access.
+   * @returns {state: Slices[K], setState: (payload: Updater) => void} - The state and dispatch of the slice.
+   * @throws {Error} - If the slice is not found.
+   */
   function useSRASM<K extends SliceKey>(slice: K) {
     try {
       const ctx = useContext(sliceContexts[slice as string]);
@@ -180,8 +194,8 @@ export function createStateStore<Slices extends Record<string, any>>(
         error instanceof Error
           ? error.message
           : JSON.stringify(error)?.trim().length > 0
-            ? JSON.stringify(error)
-            : "useSRASM hook error: please check how you used the library. If you cannot solve, go to the SRASM AI.";
+          ? JSON.stringify(error)
+          : "useSRASM hook error: please check how you used the library. If you cannot solve, go to the SRASM AI.";
 
       throw Object.assign(new Error(errorMessage), {
         slice: slice,
