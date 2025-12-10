@@ -18,6 +18,9 @@ import { ChatMessage } from "./chatMessage";
 import { ThinkingAnimation } from "./thinkingAnimation";
 
 import type { ChatMessagesContainerProps } from "../../types";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 
 export function ChatMessagesContainer({
   messages,
@@ -65,11 +68,18 @@ export function ChatMessagesContainer({
                 textSize === "compact"
                   ? "text-sm"
                   : textSize === "large"
-                    ? "text-lg"
-                    : "text-base"
+                  ? "text-lg"
+                  : "text-base"
               }
             >
-              <p className="whitespace-pre-wrap break-words">{currentAiText}</p>
+              <p className="whitespace-pre-wrap break-words">
+                <Markdown
+                  remarkPlugins={[remarkGfm]}
+                  rehypePlugins={[rehypeHighlight]}
+                >
+                  {currentAiText}
+                </Markdown>
+              </p>
               {/* Blinking cursor indicator */}
               <span className="animate-pulse ml-1 inline-block">|</span>
             </div>

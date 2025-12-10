@@ -167,14 +167,6 @@ export function createStateStore<Slices extends Record<string, any>>(
     try {
       const ctx = useContext(sliceContexts[slice as string]);
       if (!ctx) throw new Error(`Slice '${String(slice)}' not found`);
-      // (async () => {
-      //   errorWorker.postMessage({
-      //     errorMessage: "error on SRASM SLICE",
-      //     slice: slice,
-      //   });
-      // })();
-
-
       type Updater =
         | Partial<Slices[K]>
         | ((prev: Slices[K]) => Partial<Slices[K]>);
@@ -184,12 +176,6 @@ export function createStateStore<Slices extends Record<string, any>>(
         setState: (payload: Updater) => void;
       };
     } catch (error) {
-      // (async () => {
-      //   errorWorker.postMessage({
-      //     errorMessage: "error on SRASM SLICE",
-      //     slice: slice,
-      //   });
-      // })();
       const errorMessage =
         error instanceof Error
           ? error.message

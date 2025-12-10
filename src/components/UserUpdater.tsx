@@ -1,5 +1,5 @@
 import React from "react";
-import { useMultipleState } from "../hooks";
+import { useAiGeneratedStateByText, useMultipleState } from "../hooks";
 import type { SectionHeaderProps, SliceDisplayProps } from "../types";
 import type { BlogState } from "../srsm";
 
@@ -40,8 +40,10 @@ const UserUpdater: React.FC = () => {
   const { Blog } = useMultipleState<{ Blog: BlogState }>(["Blog"]);
   const { state: blogState } = Blog;
 
+
   return (
     <div style={styles.container}>
+  
       <div style={styles.innerContainer}>
         <div style={styles.controlPanel}>
           <SectionHeader title="Blog Management" icon="📝" />

@@ -22,8 +22,6 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = ({
   const [explanation, setExplanation] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  
-
   useEffect(() => {
     const fetchExplanation = async () => {
       setLoading(true);
@@ -53,9 +51,7 @@ Provide a concise, developer-friendly explanation and a potential fix and @note 
         const response = await model.generate([[new HumanMessage(prompt)]]);
         const text =
           response.generations[0][0]?.text ||
-          "AI could not generate explanation.";  
-          console.log(text);
-                  
+          "AI could not generate explanation.";
         setExplanation(text);
       } catch (err) {
         console.error("AI explanation failed:", err);
@@ -129,7 +125,7 @@ Provide a concise, developer-friendly explanation and a potential fix and @note 
                 </p>
               </div>
             ) : (
-              <div className="prose prose-invert max-w-none text-[#CCC] text-sm leading-relaxed" >
+              <div className="prose prose-invert max-w-none text-[#CCC] text-sm leading-relaxed">
                 <Markdown
                   remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeHighlight]}
