@@ -1,106 +1,71 @@
 # AI Features
 
-SRASM isn't just a state management library; it's designed with AI integration at its core. It provides powerful tools for building AI interfaces and leverages AI to help you debug your application.
+SRASM leverages AI to help you build better applications and debug them faster. It provides intelligent error suggestions and a robust chat interface.
 
 ## 1. AI Error Suggestions (Slice Debugging)
 
-Debugging state management issues can be tricky. SRASM integrates an intelligent `ErrorBoundary` that works with a Web Worker to analyze runtime errors and provide context-aware suggestions.
+Debugging state management issues can be difficult. SRASM integrates an intelligent `ErrorBoundary` that analyzes runtime errors and provides context-aware suggestions.
 
 ### How it Works
 
 When an error occurs within a component wrapped by `SRASMProvider`:
 
 1. The `ErrorBoundary` catches the error.
-2. It captures the relevant slice state and component code.
-3. It spins up a dedicated `ErrorWorker` (Web Worker) to avoid blocking the main thread.
-4. The worker sends the error context to an AI model (configured in your app).
-5. The AI analyzes the error in the context of your specific state slice and returns a suggested fix or explanation.
+2. It captures the relevant error message and the state slice context.
+3. The AI analyzes this information and returns a suggested fix or explanation in real-time.
 
 ### Usage
 
-The `SRASMProvider` automatically sets this up. You can enhance its effectiveness by providing `relevantCode` and `additionalSlices`.
+The `SRASMProvider` automatically enables this feature. You can enhance its accuracy by passing relevant code snippets or additional slice data.
 
 ```tsx
 // App.tsx
 import { SRASMProvider } from "./store";
 
-// Optimally, you can pass source code snippets to help the AI understand context
-const relevantCode = [
-  {
-    fileName: "Counter.tsx",
-    code: "...", // string content of the file
-  },
-];
-
-<SRASMProvider relevantCode={relevantCode}>
+<SRASMProvider 
+  relevantCode={[
+    { fileName: "Counter.tsx", code: "..." } 
+  ]}
+>
   <App />
 </SRASMProvider>
 ```
 
-When an error crashes the app, you will see an enhanced error screen with an "AI Suggestion" section explaining *why* the crash happened based on your specific state data.
+When your app crashes, you will see a user-friendly error screen. The "AI Diagnosis" section will explain *why* the crash happened based on your specific state data and suggest a solution.
 
 ---
 
-## 2. AI Chat (`useChat`)
+## 2. AI Chat Functionality
 
-SRASM includes a production-ready `useChat` hook designed for building robust AI chat interfaces. It handles efficient state updates, streaming responses, and persistence.
+SRASM provides a complete chat solution, available both as a hook and a ready-to-use visual component.
 
-### Features
+### Visual Chat Component
 
-- **Streaming Support**: Handles token-by-token streaming updates for a real-time "typing" feel.
-- **Persistence**: Automatically saves chat history to `IndexDB`, ensuring conversations aren't lost on refresh.
-- **Pagination**: Efficiently loads older messages as you scroll.
-- **State Management**: Manages loading states, user input, and message history.
+The easiest way to add a full-featured AI chat interface to your application is by using the `SrasmChat` component. Simply add it to your router:
 
-### API: `useChat()`
+```tsx
+import SrasmChat from './components/SrasmChat';
+import { Route, Routes } from 'react-router-dom';
+
+<Routes>
+  {/* Add the chat route */}
+  <Route path="/chat" element={<SrasmChat chatPath='/chat' />} />
+</Routes>
+```
+
+This renders a complete chat UI that handles:
+- **Message History**: Automatically saves and loads conversations.
+- **Streaming**: Displays AI responses as they are typed.
+- **UI/UX**: Polished interface with input handling, loading states, and auto-scrolling.
+
+### `useChat` Hook
+
+For custom UI implementations, you can use the underlying `useChat` hook.
 
 ```typescript
 import { useChat } from "srasm/hooks";
 
-function ChatComponent() {
-  const {
-    messages,       // Array of ChatMessage objects
-    input,          // Current input text
-    setInput,       // Update input text
-    sendMessage,    // Function to send message to AI
-    currentAiText,  // Real-time streaming text (the chunk being typed)
-    loading,        // Boolean loading state
-    setChatId,      // Switch between different conversation threads
-    deleteChat,     // Delete a conversation
-  } = useChat();
-
-  return (
-    <div className="chat-container">
-      <div className="messages">
-        {messages.map((msg, i) => (
-          <div key={i} className={`message ${msg.role}`}>
-            {msg.content}
-          </div>
-        ))}
-        {/* Render the streaming text separately while loading */}
-        {loading && <div className="message agent retrieving">{currentAiText}</div>}
-      </div>
-
-      <div className="input-area">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <button onClick={sendMessage} disabled={loading}>
-          Send
-        </button>
-      </div>
-    </div>
-  );
-}
+const { messages, input, setInput, sendMessage, loading } = useChat();
 ```
 
-### Persistence (IndexDB)
-
-The hook uses a singleton `IndexDB` utility class to manage local storage.
-- **`saveMessage(chatId, messages)`**: Stores the updated conversation.
-- **`getMessages(chatId, limit)`**: Retrieves paginated messages.
-- **`deleteChat(chatId)`**: Removes a conversation history.
-
-This ensures your chat application is offline-capable and preserves user context across sessions.
+This hook manages the state for messages, input, and AI streaming, allowing you to build your own chat interface if the default component doesn't fit your needs.

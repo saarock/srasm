@@ -4,11 +4,12 @@ import { Search, Grid, List } from "lucide-react";
 import BlogSidebar from "../BlogSidebar";
 import PostCard from "../PostCard";
 import BlogPostView from "../BlogPostView";
+import type { BlogPost } from "../../types";
 
 const BlogHome: React.FC = () => {
     const { state, setState } = useSRASM("blog");
 
-    
+
     if (!state) {
         return <div>Loading...</div>;
     }
@@ -34,7 +35,7 @@ const BlogHome: React.FC = () => {
         // Filter by category
         if (selectedCategoryId) {
             filtered = filtered.filter(
-                (post) => post.categoryId === selectedCategoryId
+                (post: BlogPost) => post.categoryId === selectedCategoryId
             );
         }
 
@@ -42,10 +43,10 @@ const BlogHome: React.FC = () => {
         if (searchQuery && searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
             filtered = filtered.filter(
-                (post) =>
+                (post: BlogPost) =>
                     post.title.toLowerCase().includes(query) ||
                     post.excerpt.toLowerCase().includes(query) ||
-                    post.tags.some((tag) => tag.toLowerCase().includes(query))
+                    post.tags.some((tag: string) => tag.toLowerCase().includes(query))
             );
         }
 
@@ -54,7 +55,7 @@ const BlogHome: React.FC = () => {
 
     const selectedPost = useMemo(() => {
         if (!selectedPostId || !posts) return null;
-        return posts.find((p) => p.id === selectedPostId) || null;
+        return posts.find((p: BlogPost) => p.id === selectedPostId) || null;
     }, [selectedPostId, posts]);
 
     const selectedAuthor = useMemo(() => {
