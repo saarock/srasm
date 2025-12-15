@@ -1,0 +1,3 @@
+﻿src/components/ReRenderDemo/BlogSliceDemo.tsx(5,1): error TS6133: 'SRASMMemo' is declared but its value is never read.
+src/components/SRASMMemo/SRASMMemo.tsx(6,7): error TS2322: Type '({ children }: SRASMMemoProps) => void' is not assignable to type 'FC<SRASMMemoProps>'.
+  Type 'void' is not assignable to type 'ReactNode | Promise<ReactNode>'.

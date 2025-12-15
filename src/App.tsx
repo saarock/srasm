@@ -2,21 +2,19 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BlogHome from './components/BlogHome';
 import Nav from './components/Nav';
-import TreeExplorer from './components/TreeVisualization';
-import { useReadGlobalState } from './hooks';
-import { initialState } from './srsm';
+import TreeWrapper from './components/TreeVisualization/TreeWrapper';
 import SrasmChat from './components/SrasmChat';
+import ReRenderDemo from './components/ReRenderDemo';
 
 const App: React.FC = () => {
-  const { globalState } = useReadGlobalState({ blog: initialState });
-
   return (
     <Router>
       <Nav />
       <Routes>
         <Route path="/" element={<BlogHome />} />
-        <Route path="/tree" element={<TreeExplorer data={globalState} />} />
+        <Route path="/tree" element={<TreeWrapper />} />
         <Route path="/chat" element={<SrasmChat chatPath='/chat' />} />
+        <Route path="/demo" element={<ReRenderDemo />} />
         {/* Add more routes here as needed */}
         {/* Example: <Route path="/about" element={<About />} /> */}
       </Routes>

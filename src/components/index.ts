@@ -18,4 +18,5 @@ export * from "./Toast";
 export { default as TreeExplorer } from "./TreeVisualization";
 export * from "./UserUpdater";
 export * from "./chat";
+export * from "./SRASMMemo/SRASMMemo";
 // export {SRASMTreeDisplayComponent};

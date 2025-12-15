@@ -61,8 +61,33 @@ export interface BlogState {
   viewMode: 'grid' | 'list';
 }
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
 
+// --- DEMO SLICES ---
+export interface DemoSliceA {
+  count: number;
+  lastUpdated: string;
+}
 
+export interface DemoSliceB {
+  text: string;
+  color: string;
+}
+
+export const demoSliceA: DemoSliceA = {
+  count: 0,
+  lastUpdated: new Date().toISOString(),
+};
+
+export const demoSliceB: DemoSliceB = {
+  text: "Initial Text",
+  color: "#00E6E6",
+};
+// -------------------
 
 // Initial State with Sample Data
 export const initialState: BlogState = {
@@ -367,7 +392,7 @@ Memoize expensive calculations and functions:
 \`\`\`typescript
 const memoizedValue = useMemo(() => {
   return expensiveCalculation(a, b);
-}, [a, b]);
+});
 
 const memoizedCallback = useCallback(() => {
   doSomething(a, b);

@@ -1,0 +1,6 @@
+﻿src/components/ReRenderDemo/BlogSliceDemo.tsx(5,1): error TS6133: 'SRASMMemo' is declared but its value is never read.
+src/components/ReRenderDemo/BlogSliceDemo.tsx(77,17): error TS7006: Parameter 'prev' implicitly has an 'any' type.
+src/components/ReRenderDemo/BlogSliceDemo.tsx(78,46): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/components/ReRenderDemo/DemoSliceA.tsx(26,19): error TS7006: Parameter 'prev' implicitly has an 'any' type.
+src/components/SRASMMemo/SRASMMemo.tsx(6,7): error TS2322: Type '({ children }: SRASMMemoProps) => void' is not assignable to type 'FC<SRASMMemoProps>'.
+  Type 'void' is not assignable to type 'ReactNode | Promise<ReactNode>'.
