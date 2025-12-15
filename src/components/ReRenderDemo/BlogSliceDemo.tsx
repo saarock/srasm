@@ -6,10 +6,14 @@ import type { BlogPost } from "../../types";
 // Connected Post Card Component (Fetches its own data)
 const ConnectedPostCard = memo(({ postId }: { postId: string }) => {
   // Each card subscribes to the WHOLE 'blog' slice
-  const { state: post, setState } = useSRASM("blog", (p: { posts: BlogPost[] }) =>
-    p.posts.find((p) => p.id === postId)
+  const { state: post, setState } = useSRASM(
+    "blog",
+    (p: { posts: BlogPost[] }) => p.posts.find((p) => p.id === postId)
   );
-  const { state: comments } = useSRASM("blog", (p: { comments: any[] }) => p.comments);
+  const { state: comments } = useSRASM(
+    "blog",
+    (p: { comments: any[] }) => p.comments
+  );
 
   useEffect(() => {
     // alert(JSON.stringify(comments));
@@ -103,23 +107,22 @@ export const BlogSliceDemo: React.FC = () => {
           directly.
           <br />
           <span className="text-yellow-500">
-            Warning: Since they all subscribe to the same 'blog' slice, updating
-            ONE post will cause ALL cards to re-render.
+            Note: Since they all subscribe to the same 'blog' slice, updating
+            ONE post will not cause ALL cards to re-render.
           </span>
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {demoPostIds.map((postId:string) => (
+        {demoPostIds.map((postId: string) => (
           <ConnectedPostCard key={postId} postId={postId} />
         ))}
       </div>
 
       <div className="mt-4 p-3 bg-[#1A1A1A] border border-[#333] rounded text-sm text-gray-500">
         <p>
-          Try clicking "Like" on one card. Observe that the "Renders" count
-          increases for <strong>ALL</strong> cards because the slice reference
-          changes.
+          Try clicking “Like” on one card. <strong> Only that card re-renders</strong> other cards
+          are not affected.
         </p>
       </div>
     </div>

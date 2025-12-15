@@ -145,7 +145,7 @@ export function createStateStore<Slices extends Record<string, any>>(
       (listener) => subscribeSlice(slice, listener),
       () => storeState[slice],
       () => initialSlices[slice],
-      selector ?? ((s: Slices[K]) => s as any),
+      selector ?? ((s: Selected) => s as Selected),
       options?.isEqual ?? Object.is
     );
 
