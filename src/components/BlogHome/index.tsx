@@ -4,10 +4,10 @@ import { Search, Grid, List } from "lucide-react";
 import BlogSidebar from "../BlogSidebar";
 import PostCard from "../PostCard";
 import BlogPostView from "../BlogPostView";
-import type { BlogPost } from "../../types";
+import type { BlogPost, Author, Comment } from "../../types";
 
 const BlogHome: React.FC = () => {
-    const { state, setState } = useSRASM("blog");
+    const { state, setState } = useSRASM("blog", prev => prev, { useDeepEqualCheck: true });
 
 
     if (!state) {
@@ -60,19 +60,19 @@ const BlogHome: React.FC = () => {
 
     const selectedAuthor = useMemo(() => {
         if (!selectedPost || !authors) return null;
-        return authors.find((a) => a.id === selectedPost.authorId) || null;
+        return authors.find((a: Author) => a.id === selectedPost.authorId) || null;
     }, [selectedPost, authors]);
 
     const postComments = useMemo(() => {
         if (!selectedPostId || !comments) return [];
-        return comments.filter((c) => c.postId === selectedPostId);
+        return comments.filter((c: Comment) => c.postId === selectedPostId);
     }, [selectedPostId, comments]);
 
     const relatedPosts = useMemo(() => {
         if (!selectedPost || !posts) return [];
         return posts
             .filter(
-                (p) =>
+                (p: BlogPost) =>
                     p.id !== selectedPost.id && p.categoryId === selectedPost.categoryId
             )
             .slice(0, 3);
@@ -116,7 +116,7 @@ const BlogHome: React.FC = () => {
     const handleLikeComment = (commentId: string) => {
         if (!comments) return;
 
-        const updatedComments = comments.map((c) =>
+        const updatedComments = comments.map((c: Comment) =>
             c.id === commentId ? { ...c, likes: c.likes + 1 } : c
         );
 
@@ -223,7 +223,7 @@ const BlogHome: React.FC = () => {
                                         : "flex flex-col gap-4"
                                 }
                             >
-                                {filteredPosts.map((post) => (
+                                {filteredPosts.map((post: BlogPost) => (
                                     <PostCard
                                         key={post.id}
                                         post={post}

@@ -1,15 +1,15 @@
 import React, { useRef, useEffect, memo } from "react";
 import { useSRASM } from "../../srsm";
 import { Heart, MessageCircle } from "lucide-react";
-// import type { BlogPost } from "../../srsm/userState"; // No longer directly passed
+import type { BlogPost } from "../../types";
 
 // Connected Post Card Component (Fetches its own data)
 const ConnectedPostCard = memo(({ postId }: { postId: string }) => {
   // Each card subscribes to the WHOLE 'blog' slice
-  const { state: post, setState } = useSRASM("blog", (p) =>
+  const { state: post, setState } = useSRASM("blog", (p: { posts: BlogPost[] }) =>
     p.posts.find((p) => p.id === postId)
   );
-  const { state: comments } = useSRASM("blog", (p) => p.comments);
+  const { state: comments } = useSRASM("blog", (p: { comments: any[] }) => p.comments);
 
   useEffect(() => {
     // alert(JSON.stringify(comments));
@@ -38,7 +38,7 @@ const ConnectedPostCard = memo(({ postId }: { postId: string }) => {
   const handleLike = React.useCallback(() => {
     setState((prevState) => ({
       ...prevState,
-      posts: prevState.posts.map((p) =>
+      posts: prevState.posts.map((p: BlogPost) =>
         p.id === postId ? { ...p, likes: p.likes + 1 } : p
       ),
     }));
@@ -89,7 +89,7 @@ export const BlogSliceDemo: React.FC = () => {
   // Note: This parent component will also re-render on any blog change,
   // re-rendering the list of ConnectedPostCards.
   // However, since ConnectedPostCard is also connected, it would re-render anyway.
-  const demoPostIds = state.posts.slice(0, 3).map((p) => p.id);
+  const demoPostIds = state.posts.slice(0, 3).map((p: BlogPost) => p.id);
 
   return (
     <div className="mt-12 pt-12 border-t border-[#333]">
@@ -110,7 +110,7 @@ export const BlogSliceDemo: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {demoPostIds.map((postId) => (
+        {demoPostIds.map((postId:string) => (
           <ConnectedPostCard key={postId} postId={postId} />
         ))}
       </div>
