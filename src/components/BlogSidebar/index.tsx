@@ -64,7 +64,7 @@ const BlogSidebar: React.FC<BlogSidebarProps> = ({
                         </button>
                     </li>
                     {categories.map((category) => (
-                        <li key={category.id}>
+                        <li key={category.id + category.name}>
                             <button
                                 onClick={() => onCategorySelect(category.id)}
                                 className={`w-full text-left p-3 rounded-xl transition-all border flex items-center justify-between group ${selectedCategoryId === category.id

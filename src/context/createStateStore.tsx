@@ -2,6 +2,17 @@ import React, { useCallback} from "react";
 import { ErrorBoundary } from "../components/ErrorBoundry";
 import { deepEqual } from "../utils";
 import { useSyncExternalStoreWithSelector } from "use-sync-external-store/with-selector";
+/**
+ * Creates a state store with the given initial state slices.
+ * The state store is used by the `useSRASM` hook to provide a strongly-typed
+ * way of accessing and updating the state.
+ *
+ * @param {Slices} initialSlices The initial state slices to be used by the state store.
+ * @return {{ SRASMProvider: React.FC<{ children: React.ReactNode; relevantCode?: { fileName: string; code: string }[] | undefined; additionalSlices?: any[] | undefined }>; useSRASM: <K extends SliceKey, Selected = Slices[K]>(slice: K, selector?: (s: Slices[K]) => Selected, options?: { useDeepEqualCheck?: boolean; isEqual?: (a: Selected, b: Selected) => boolean; }) => useSRASMReturn }}
+ * The returned object contains the `SRASMProvider` context provider component and the `useSRASM` hook.
+ * The `SRASMProvider` component should be used to wrap your application, providing the necessary state and error handling to SRASM components.
+ * The `useSRASM` hook can be used by your React components to access and update the state.
+ */
 export function createStateStore<Slices extends Record<string, any>>(
   initialSlices: Slices
 ) {
