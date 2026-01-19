@@ -1,4 +1,4 @@
-import { initialState, useSRASM, type BlogState } from "../srsm";
+import { useSRASM } from "../srsm";
 
 export default function useReadGlobalState<TSlices extends Record<string, any>>(
   slices: TSlices

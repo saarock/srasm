@@ -6,7 +6,7 @@ import App from "./App.tsx";
 import { SRASMProvider } from "./srsm/index.ts";
 import SRASMRealTimeSliceSplitDebugger from "./components/SRASMRealTimeSliceSplitDebugger";
 
-// ✅ raw strings (default imports)
+//  raw strings (default imports)
 import initialStateCode from "./srsm/index.ts?raw";
 import userUpdaterCode from "./components/UserUpdater/index.tsx?raw";
 import storeCode from "./srsm/index.ts?raw";
@@ -23,7 +23,7 @@ createRoot(document.getElementById("root")!).render(
     >
       <App />
 
-      {/* ✅ new debugger API */}
+      {/*  new debugger API */}
       <SRASMRealTimeSliceSplitDebugger
         files={[
           { filePath: "src/srsm/index.ts", codes: storeCode },

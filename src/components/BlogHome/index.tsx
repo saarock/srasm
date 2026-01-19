@@ -15,9 +15,9 @@ const BlogHome: React.FC = () => {
   });
 
   // recommended ids (we'll treat these as "recommended categories" / ids source)
-  const [recommendedIds, setRecommendedIds] = useState<string[]>([]);
+  const [_, setRecommendedIds] = useState<string[]>([]);
 
-  // ✅ store last clicked post id + category so we can show recommendations on home
+  //  store last clicked post id + category so we can show recommendations on home
   const [lastClickedPostId, setLastClickedPostId] = useState<string | null>(null);
   const [lastClickedCategoryId, setLastClickedCategoryId] = useState<string | null>(
     null
