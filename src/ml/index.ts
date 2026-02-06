@@ -1,1 +1,1 @@
-export * from "./globalLogs";
+export { logClick } from "./globalLogs";

@@ -1,9 +1,0 @@
-@import "tailwindcss";
-body {
-  position: relative;
-  font-family: "Roboto", sans-serif;
-}
-
-.markdown > * {
-  all: revert;
-}

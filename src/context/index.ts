@@ -1,1 +1,1 @@
-export * from "./createStateStore";
+export {createStateStore} from "./createStateStore";

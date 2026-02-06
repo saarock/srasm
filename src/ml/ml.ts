@@ -1,4 +1,5 @@
-import type { ClickEvent } from "@/ml";
+import type { ClickEvent } from "@/types";
+
 
 export function getMosteClikableIds(limit = 10): string[] {
   const events: ClickEvent[] = JSON.parse(
@@ -11,12 +12,6 @@ export function getMosteClikableIds(limit = 10): string[] {
     const weight = Math.max(0.2, 1 / (1 + ageHour)); // age weight
     scoreMap[e.categoryId] = (scoreMap[e.categoryId] || 0) + weight;
   }
-
-  console.log(Object.entries(scoreMap)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, limit)
-    .map(([categoryId]) => categoryId));
-  
 
   return Object.entries(scoreMap)
     .sort((a, b) => b[1] - a[1])
