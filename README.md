@@ -19,10 +19,6 @@
 
 ```bash
 npm install srasm
-# or
-yarn add srasm
-# or
-bun add srasm
 ```
 
 ---
