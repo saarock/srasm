@@ -15,12 +15,12 @@ function useForceRerender() {
 }
 
 /**
- * ✅ GET hook (cached) — data stored in slice "todos" (array)
+ * GET hook (cached) — data stored in slice "todos" (array)
  */
 function useTodosQuery(opts: { skip?: boolean; onCount?: () => void } = {}) {
   const fetchTodos = useCallback(async () => {
     GET_COUNT++;
-    console.log("🔥 GET /todos count =", GET_COUNT);
+    console.log(" GET /todos count =", GET_COUNT);
     opts.onCount?.();
 
     const url = `https://jsonplaceholder.typicode.com/todos?_limit=5`;
@@ -42,7 +42,7 @@ function useTodosQuery(opts: { skip?: boolean; onCount?: () => void } = {}) {
 }
 
 /**
- * ✅ POST mutation — data stored in slice "todoCreateResult" (object)
+ * POST mutation — data stored in slice "todoCreateResult" (object)
  * This prevents overwriting the "todos" list slice (array).
  */
 function useCreateTodoMutation(opts: { onCount?: () => void } = {}) {
@@ -66,7 +66,7 @@ function useCreateTodoMutation(opts: { onCount?: () => void } = {}) {
     [opts],
   );
 
-  // ✅ IMPORTANT: slice changed to "todoCreateResult"
+  // IMPORTANT: slice changed to "todoCreateResult"
   return useSRASMAsync<any, Body, "createTodo">(
     "todoCreateResult" as any,
     postTodo,
@@ -196,7 +196,7 @@ function CounterDemo() {
 function TodosGetDemo({ onCount }: { onCount: () => void }) {
   const { data, loading, error, refetch } = useTodosQuery({ onCount });
 
-  // ✅ SAFE: ensure array
+  // SAFE: ensure array
   const todos = Array.isArray(data) ? (data as Todo[]) : [];
 
   return (
@@ -260,7 +260,7 @@ function CreateTodoDemo({ onCount }: { onCount: () => void }) {
 
   useEffect(() => {
     if (data) {
-      setOkMsg(`✅ Created todo (fake). Returned id: ${data.id ?? "—"}`);
+      setOkMsg(` Created todo (fake). Returned id: ${data.id ?? "—"}`);
       const t = setTimeout(() => setOkMsg(null), 2500);
       return () => clearTimeout(t);
     }
@@ -269,7 +269,7 @@ function CreateTodoDemo({ onCount }: { onCount: () => void }) {
   const handleCreate = async () => {
     if (!title.trim()) return alert("Please enter a title");
 
-    // ✅ await so loading + success is correct
+    //  await so loading + success is correct
     await createTodo({ title, completed: false, userId });
     setTitle("");
   };
