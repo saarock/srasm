@@ -5,6 +5,44 @@
 
 **srasm** is a lightweight, ultra-fast state management library for React designed for modern applications. It combines the simplicity of local state with the power of global stores, built-in caching, and intelligent tag-based invalidation.
 
+## The Problem
+
+Modern React apps suffer from:
+- Overcomplicated state management (Redux, RTK Query)
+- Too many libraries for simple caching
+- Boilerplate-heavy async handling
+- No unified model for local + server state
+
+## The Idea
+
+srasm combines:
+- Local state (like useState)
+- Server caching (like React Query)
+- Mutation invalidation (like RTK Query)
+
+👉 In just 3 hooks:
+- useSRASM (local state)
+- useSRASMAsync (server state)
+- tag-based invalidation (sync system)
+
+## Comparison
+
+| Feature | Redux | React Query | srasm |
+|--------|------|------------|------|
+| Boilerplate | High | Medium | Low |
+| Local State | Yes | No | Yes |
+| Server Cache | No | Yes | Yes |
+| Tag Invalidation | Manual | Partial | Built-in |
+
+
+## Example (Real App Flow)
+
+- Fetch todos → cached automatically
+- Create todo → invalidates cache
+- List updates automatically
+
+No manual refetching. No boilerplate.
+
 ## Why srasm?
 
 - 🚀 **Performance First**: Built with `useSyncExternalStore` for teardown-free, tearing-free updates.
